@@ -1,0 +1,119 @@
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.sidenav-wrapper {
+  flex: 1;
+}
+
+.main-toolbar {
+  background-color: #d7e3ff;
+  position: relative;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  color: #005cbb !important;
+}
+
+.logo-img {
+  max-height: 60px;
+}
+
+.center-nav {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.nav-title-btn {
+  pointer-events: auto;
+  font-size: 1rem;
+}
+
+.nav-btn{
+  font-size: 1rem;
+  /* Força o formato oval/pílula */
+  border-radius: 20px !important; /* Metade da altura para ser oval perfeito */
+  width: 56px !important;  /* Largura maior para o formato pílula */
+  height: 38px !important; /* Altura do botão */
+  
+  /* CENTRALIZAÇÃO REAL */
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Garante que o ícone dentro não tenha margens */
+.nav-btn mat-icon {
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 24px !important;  /* Tamanho padrão do ícone */
+  height: 24px !important;
+}
+
+/* Ajusta a área de clique e o efeito visual (ripple) para o novo formato */
+::ng-deep .nav-btn .mat-mdc-button-touch-target,
+::ng-deep .nav-btn .mat-mdc-button-ripple {
+  border-radius: 20px !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Remove qualquer deslocamento interno do Material 3 */
+::ng-deep .nav-btn .mdc-icon-button__link {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.spacer { flex: 1 1 auto; }
+
+.user-email {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.custom-sidenav {
+  width: 280px;
+  border-right: none;
+  background-color: #fdfdfd; 
+}
+
+.list-label {
+  padding: 16px 24px 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #5f6368;
+  letter-spacing: 0.1em;
+}
+
+.nav-pill-list mat-list-item {
+  margin: 4px 12px;
+  border-radius: 28px; 
+  height: 56px !important;
+}
+
+.nav-pill-list mat-list-item:hover {
+  background-color: rgba(0, 92, 187, 0.08);
+}
+
+.content-area {
+  background-color: #f8f9fa;
+}
+
+.inner-content {
+  padding: 24px;
+}
+
+.nav-title-btn{
+  color: #005cbb !important;
+}
+

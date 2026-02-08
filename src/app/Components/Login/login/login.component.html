@@ -1,0 +1,30 @@
+<div class="login-wrapper">
+    <div class="card main-card">
+        <div class="row g-0">
+
+            <!-- Coluna 8 (FOTO) -->
+            <div class="col-md-8 side-image">
+                <app-side-image></app-side-image>
+            </div>
+
+            <!-- Coluna 4 (SignIn) -->
+            <div class="col-md-4 side-form mt-3">
+                <img src="img/logo.png" alt="Logo" class="img-fluid mx-auto d-block mb-3"
+                    style="max-height: 105px; width: auto;">
+
+                <h4 class="mb-4 fw-bold"></h4>
+
+                @if (showSignIn) {
+                <div class="enter-by-left">
+                    <app-sign-in (changeLoginAction)="ToggleForm()"></app-sign-in>
+                </div>
+                } @else {
+                <div class="enter-by-right">
+                    <app-new-user (changeLoginAction)="ToggleForm()"></app-new-user>
+                </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>

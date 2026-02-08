@@ -1,0 +1,31 @@
+<h4 class="mb-4  text-center title-decoration">Cadastre-se</h4>
+
+<form>
+    <div class="mb-3">
+        <label class="form-label">E-mail</label><label class="color-red">*</label>
+        <input type="email" class="form-control" placeholder="">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Senha</label><label class="color-red">*</label>
+        <input type="password" class="form-control" placeholder="">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Confirmar Senha</label><label class="color-red">*</label>
+        <input type="password" class="form-control" placeholder="">
+    </div>
+
+    <div class="d-grid gap-2 mt-3">
+        <button type="button" mat-flat-button>
+            <mat-icon>how_to_reg</mat-icon>
+            Criar conta
+        </button>
+    </div>
+
+    <div class="d-grid gap-2 mt-3 text-center">
+        <button type="button" (click)="ChangeLoginAction()" mat-button color="primary">
+            <mat-icon>arrow_back</mat-icon>
+            Já tenho uma conta
+        </button>
+    </div>
+</form>

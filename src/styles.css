@@ -1,0 +1,25 @@
+
+
+body {
+    background-color: #e9ecef !important;
+    margin: 0;
+    padding: 0;
+}
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.color-red{
+    color: #E60102;
+}
+
+.link {
+    text-decoration: none;
+    cursor: pointer;
+    color: black;
+    font-size: 0.9rem;
+}
+
+.link:hover{
+    color: #005cbb;
+}
+

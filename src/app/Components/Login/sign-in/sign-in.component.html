@@ -1,0 +1,38 @@
+<form class="mt-1">
+    <div class="mb-3">
+        <label class="form-label">E-mail</label><label class="color-red">*</label>
+        <input type="email" class="form-control" placeholder="">
+    </div>
+    <div class="mb-1">
+        <label class="form-label">Senha</label><label class="color-red">*</label>
+        <input type="password" class="form-control" placeholder="">
+    </div>
+
+    <div class="text-end mb-4">
+        <a class="link">Esqueceu a senha?</a>
+    </div>
+
+    <div class="d-grid gap-2 mt-3">
+        <button type="button" mat-flat-button (click)="SignIn()">
+            <mat-icon>login</mat-icon>
+            Entrar
+        </button>
+    </div>
+
+    <div class="d-grid mt-2">
+        <button type="button" (click)="ChangeLoginAction()" mat-button color="primary">
+            <mat-icon>person_add</mat-icon>
+            Criar conta
+        </button>
+    </div>
+
+    <hr class="mt-4">
+
+    <div class="d-grid gap-2 mt-4 text-center" style="margin-bottom: 17px;">
+        <button type="button" mat-raised-button color="primary" class="btn-google">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google"
+                style="width: 20px; height: 20px; margin-right: 10px;">
+            Entrar com Google
+        </button>
+    </div>
+</form>
