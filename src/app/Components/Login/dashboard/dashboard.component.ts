@@ -5,6 +5,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../Services/auth.service';
 
 @Component({
   selector: 'app-content',
@@ -19,11 +20,18 @@ import { Router } from '@angular/router';
 })
 export class DashboardComponent {
 
-  constructor(private router: Router) { }
+  constructor(private router: Router,  private authService: AuthService,) { }
 
   isMenuOpen = true; 
   
-  Logout() {
-    this.router.navigate(['/login']);
+
+  async Logout() {
+    try {
+      await this.authService.logout();
+
+      this.router.navigate(['/login']);
+    } catch (error) {
+      console.error(error);
+    }
   }
 }
