@@ -1,22 +1,22 @@
 <h4 class="mb-4  text-center title-decoration">Cadastre-se</h4>
 
-<form>
+<form (submit)="$event.preventDefault()">
     <div class="mb-3">
         <label class="form-label">E-mail</label><label class="color-red">*</label>
-        <input type="email" class="form-control" placeholder="">
+        <input type="email" class="form-control" name="email" [(ngModel)]="email" placeholder="exemplo@email.com">
     </div>
     <div class="mb-3">
         <label class="form-label">Senha</label><label class="color-red">*</label>
-        <input type="password" class="form-control" placeholder="">
+         <input type="password" class="form-control" name="senha" [(ngModel)]="senha" placeholder="Mínimo 6 caracteres">
     </div>
 
     <div class="mb-3">
         <label class="form-label">Confirmar Senha</label><label class="color-red">*</label>
-        <input type="password" class="form-control" placeholder="">
+        <input type="password" class="form-control" name="confirmarSenha" [(ngModel)]="confirmarSenha" placeholder="Repita a senha">
     </div>
 
     <div class="d-grid gap-2 mt-3">
-        <button type="button" mat-flat-button>
+        <button type="button" mat-flat-button (click)="cadastrar()">
             <mat-icon>how_to_reg</mat-icon>
             Criar conta
         </button>
