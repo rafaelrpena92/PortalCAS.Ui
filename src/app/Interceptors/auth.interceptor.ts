@@ -6,7 +6,7 @@ import { AuthService } from '../Services/auth.service';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
     const authService = inject(AuthService);
-    const token = authService.getTokenSync();
+    const token = authService.getToken();
 
     if (token) {
         const authReq = req.clone({

@@ -8,5 +8,5 @@ export const environment = {
         appId: "1:1094901100551:web:00b371bbf2676d3fe53aa2",
         measurementId: "G-ZWGKHC999G"
     },
-     apiUrl: 'https://localhost:7123/api'
+     apiUrl: 'https://localhost:7211/api'
 };

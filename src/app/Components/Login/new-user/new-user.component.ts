@@ -5,6 +5,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../Services/auth.service';
+import { NewUser } from '../../../Models/Entities/User/new-user.model';
+import { NotificationService } from '../../../Services/notification.service';
+import { isValidEmail } from '../../../Utils/valitadors.util';
 
 @Component({
   selector: 'app-new-user',
@@ -13,48 +16,74 @@ import { AuthService } from '../../../Services/auth.service';
   styleUrl: './new-user.component.css'
 })
 export class NewUserComponent {
-  email: string = '';
-  senha: string = '';
-  confirmarSenha: string = '';
+  newUser: NewUser = new NewUser();
 
-  constructor(private router: Router,  private authService: AuthService) { }
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private notification: NotificationService
+  ) { }
 
   @Output() changeLoginAction = new EventEmitter<void>();
 
-  async cadastrar() {
-    debugger
-    // 1. Validação simples de senha
-    if (this.senha !== this.confirmarSenha) {
-      alert("As senhas não conferem!");
-      return;
-    }
-
-    if (this.senha.length < 6) {
-      alert("A senha deve ter no mínimo 6 caracteres (exigência do Firebase).");
+  async signUp() {
+    let msg = this.newUserValidate();
+    if (msg) {
+      this.notification.MessagePopup("warning", "Atenção", msg);
       return;
     }
 
     try {
-      const user = await this.authService.cadastrarComEmail(this.email, this.senha);
-      
-      console.log("Usuário criado com sucesso:", user);
-      alert("Conta criada com sucesso!");
-      
-      this.router.navigate(['/home']);
-      
+      await this.authService.signUpWithEmail(this.newUser.email, this.newUser.password);
+
+      this.notification.smallMessagePopup("success", "Conta criada com sucesso!",
+        () => {
+          this.goToHome();
+        });
+
     } catch (error: any) {
-      console.error(error);
-      if (error.code === 'auth/email-already-in-use') {
-        alert("Este e-mail já está em uso.");
-      } else if (error.code === 'auth/invalid-email') {
-        alert("E-mail inválido.");
-      } else {
-        alert("Erro ao criar conta: " + error.message);
+      switch (error.code) {
+        case 'auth/email-already-in-use':
+          this.notification.MessagePopup("error", "Falha ao Criar Usuário", "Este e-mail já está em uso.");
+          break;
+        case 'auth/invalid-email':
+          this.notification.MessagePopup("error", "Falha ao Criar Usuário", "E-mail inválido.");
+          break;
+        default:
+          this.notification.MessagePopup("error", "Erro Inesperado", "Erro ao criar conta: " + error.message);
+          break;
       }
     }
   }
 
-  ChangeLoginAction() {
+  goToLogin() {
     this.changeLoginAction.emit();
   }
+
+  //#region Private Methods
+
+  private newUserValidate(): string {
+    let msg = '';
+
+    if (!this.newUser.email)
+      msg = "Informe o email";
+    else if (!isValidEmail(this.newUser.email))
+      msg = "Informe um email válido";
+    else if (!this.newUser.password)
+      msg = "Informe a senha";
+    else if (!this.newUser.password)
+      msg = "Informe a confirmação da senha";
+    else if (this.newUser.password.length < 6)
+      msg = "A senha deve ter no mínimo 6 caracteres.";
+    else if (this.newUser.password !== this.newUser.confirmPassword)
+      msg = "As senhas devem ser iguais!";
+
+    return msg;
+  }
+
+  private goToHome() {
+    this.router.navigate(['/home']);
+  }
+
+  //#endregion
 }
