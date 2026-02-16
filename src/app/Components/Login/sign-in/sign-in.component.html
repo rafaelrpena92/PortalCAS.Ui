@@ -1,11 +1,11 @@
-<form class="mt-1" (submit)="SignIn()">
+<form class="mt-1" (submit)="signIn()">
     <div class="mb-3">
         <label class="form-label">E-mail</label><label class="color-red">*</label>
-         <input type="email" class="form-control" name="email" [(ngModel)]="email" required>
+         <input type="email" class="form-control" name="email" [(ngModel)]="user.email" required>
     </div>
     <div class="mb-1">
         <label class="form-label">Senha</label><label class="color-red">*</label>
-       <input type="password" class="form-control" name="senha" [(ngModel)]="senha" required>
+       <input type="password" class="form-control" name="senha" [(ngModel)]="user.password" required>
     </div>
 
     <div class="text-end mb-4">
@@ -20,7 +20,7 @@
     </div>
 
     <div class="d-grid mt-2">
-        <button type="button" (click)="ChangeLoginAction()" mat-button color="primary">
+        <button type="button" (click)="createAccount()" mat-button color="primary">
             <mat-icon>person_add</mat-icon>
             Criar conta
         </button>
@@ -28,9 +28,9 @@
 
     <hr class="mt-4">
 
-    <div class="d-grid gap-2 mt-4 text-center" style="margin-bottom: 17px;">
+    <div class="d-grid gap-2 mt-4 text-center" style="margin-bottom: 11px;">
         
-        <button type="button" (click)="loginComGoogle()" mat-raised-button color="primary" class="btn-google">
+        <button type="button" (click)="loginWithGoogle()" mat-raised-button color="primary" class="btn-google">
             <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google"
                 style="width: 20px; height: 20px; margin-right: 10px;">
             Entrar com Google

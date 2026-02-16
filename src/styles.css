@@ -5,8 +5,12 @@ body {
     margin: 0;
     padding: 0;
 }
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+body { font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .color-red{
     color: #E60102;
@@ -23,3 +27,16 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     color: #005cbb;
 }
 
+/* Classe para deixar o SweetAlert compacto */
+.swal-custom-small {
+    font-size: 0.90rem !important; 
+}
+
+.swal-custom-small .swal2-title {
+    font-size: 1.2rem !important; 
+}
+
+.swal-custom-small .swal2-styled {
+    padding: 7px 20px !important; /* Diminui o tamanho do botão */
+    font-size: 0.9rem !important;
+}

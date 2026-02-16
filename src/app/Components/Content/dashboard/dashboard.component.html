@@ -12,41 +12,45 @@
     <span class="spacer"></span>
 
     <span class="user-email me-3">brunaquadros.bio&#64;gmail.com</span>
-    
+
     <button mat-button class="nav-btn nav-title-btn" (click)="Logout()">
       <mat-icon class="text-center">logout</mat-icon>
     </button>
   </mat-toolbar>
 
   <mat-sidenav-container class="sidenav-wrapper">
-    
+
     <mat-sidenav #sidenav mode="side" opened="true" class="custom-sidenav">
       <mat-nav-list class="nav-pill-list">
         <div class="text-center mt-3 mb-3">
           <img src="img/logo.png" alt="Logo" class="logo-img">
         </div>
-        
-        <a mat-list-item href="#">
+        @if (authService.isAdmin()) {
+        <a mat-list-item routerLink="/home/configuration" routerLinkActive="active-link">
           <mat-icon matListItemIcon>dashboard</mat-icon>
-          <span matListItemTitle>Início</span>
+          <span matListItemTitle>Configuration - adms</span>
         </a>
+        }
 
-        <a mat-list-item href="#">
+        @if (authService.isUser()) {
+        <a mat-list-item routerLink="/home/userConfiguration" routerLinkActive="active-link">
           <mat-icon matListItemIcon>groups</mat-icon>
-          <span matListItemTitle>Profissionais</span>
+          <span matListItemTitle>User config - user</span>
         </a>
+        }
 
-        <a mat-list-item href="#">
+   
+        <a mat-list-item routerLink="/home/welcome" routerLinkActive="active-link">
           <mat-icon matListItemIcon>settings</mat-icon>
-          <span matListItemTitle>Configurações</span>
+          <span matListItemTitle>Welcome - all</span>
         </a>
+        
       </mat-nav-list>
     </mat-sidenav>
 
     <mat-sidenav-content class="content-area">
       <div class="inner-content">
-        <h1>Conteúdo da Página</h1>
-        <p>Aqui você começa a construir seu dashboard.</p>
+         <router-outlet></router-outlet>
       </div>
     </mat-sidenav-content>
 
