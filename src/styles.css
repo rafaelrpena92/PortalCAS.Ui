@@ -1,18 +1,21 @@
-
-
 body {
     background-color: #e9ecef !important;
     margin: 0;
     padding: 0;
 }
-html, body {
+
+html,
+body {
     height: 100%;
     margin: 0;
     padding: 0;
 }
-body { font-family: Roboto, "Helvetica Neue", sans-serif; }
 
-.color-red{
+body {
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.color-red {
     color: #E60102;
 }
 
@@ -23,20 +26,203 @@ body { font-family: Roboto, "Helvetica Neue", sans-serif; }
     font-size: 0.9rem;
 }
 
-.link:hover{
+.link:hover {
     color: #005cbb;
 }
 
 /* Classe para deixar o SweetAlert compacto */
 .swal-custom-small {
-    font-size: 0.90rem !important; 
+    font-size: 0.90rem !important;
 }
 
 .swal-custom-small .swal2-title {
-    font-size: 1.2rem !important; 
+    font-size: 1.2rem !important;
 }
 
 .swal-custom-small .swal2-styled {
-    padding: 7px 20px !important; /* Diminui o tamanho do botão */
+    padding: 7px 20px !important;
+    /* Diminui o tamanho do botão */
     font-size: 0.9rem !important;
 }
+
+.linha {
+    border: 1px solid red;
+}
+
+.lbl-Title {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.form-control {
+    border-color: #b6b6b6;
+    /* Cor cinza mais escura ao clicar */
+}
+
+
+.form-control:focus {
+    outline: none;
+    box-shadow: none;
+    border-color: #005cbb;
+    /* Cor cinza mais escura ao clicar */
+}
+
+label {
+    font-weight: 500;
+}
+
+@media (width < 770px) {
+    .hide-770 {
+        display: none !important;
+    }
+}
+
+@media (width > 770px) {
+    .show-770 {
+        display: flex;
+    }
+}
+
+/* -------------------- tabela --------------------- */
+/* Tabela */
+
+.table-container {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #e0e0e0;
+    margin: 20px 0;
+    background: white;
+}
+
+.table-header-title {
+    background-color: #f8f9ff;
+    padding: 10px 13px;
+    color: #3d3d3e;
+    font-size: 16px;
+    font-weight: 500;
+    border-bottom: 1px solid #eee;
+}
+
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+/* Estilo do Cabeçalho */
+.custom-table thead th {
+    background-color: #d7e3ff !important;
+    color: #005cbb !important;
+    padding: 9px 15px;
+    font-weight: 500;
+    text-align: left;
+    border: none;
+}
+
+/* Estilo das Células (Corpo) */
+.custom-table tbody td {
+    padding: 5px 15px;
+    border-bottom: 1px solid #f0f0f0;
+    color: #444;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+/* Efeito na linha ao passar o mouse */
+.custom-table tbody tr:hover {
+    background-color: #f8f9ff;
+}
+
+/* Estilização das Badges de Status (Pílulas) */
+.badge-custom {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-ativo {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.status-inativo {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+/* Centralização da coluna de ações */
+.text-center {
+    text-align: center;
+}
+
+/* -------------------- fim tabela --------------------- */
+
+.title {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-top: 15px;
+    margin-bottom: 20px;
+}
+
+/* -------------------- botao tabela --------------------- */
+
+
+
+/* Estilo Base para os botões da tabela */
+.btn-pill-edit,
+.btn-pill-delete {
+    border: none;
+    border-radius: 50px;
+    /* Faz o formato de pílula */
+    padding: 6px 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    margin: 0 4px;
+}
+
+/* Cores do botão Editar (Azul claro igual ao seu exemplo) */
+.btn-pill-edit {
+    background-color: #eff6ff;
+    /* Fundo azul bem claro */
+    color: #005bc1;
+    /* Texto/Ícone azul */
+}
+
+.btn-pill-edit:hover {
+    background-color: #dbeafe;
+    color: #005bc1;
+    /* Azul um pouco mais vivo no hover */
+
+}
+
+/* Cores do botão Excluir (Variação em Vermelho claro) */
+.btn-pill-delete {
+    background-color: #fff5f5;
+    /* Fundo vermelho bem claro */
+    color: #e53e3e;
+    /* Texto/Ícone vermelho */
+}
+
+.btn-pill-delete:hover {
+    background-color: #fed7d7;
+    color: #e53e3e;
+    /* Vermelho um pouco mais vivo no hover */
+
+}
+
+/* Ajuste do tamanho dos ícones dentro dos botões */
+.btn-pill-edit mat-icon,
+.btn-pill-delete mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+/* -------------------- fim botao tabela --------------------- */

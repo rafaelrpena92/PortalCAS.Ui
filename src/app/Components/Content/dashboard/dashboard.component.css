@@ -1,12 +1,11 @@
+/* NAVBAR */
 .dashboard-container {
   display: flex;
   flex-direction: column;
   height: 100vh;
 }
 
-.sidenav-wrapper {
-  flex: 1;
-}
+
 
 .main-toolbar {
   background-color: #d7e3ff;
@@ -34,14 +33,11 @@
   font-size: 1rem;
 }
 
-.nav-btn{
+.nav-btn {
   font-size: 1rem;
-  /* Força o formato oval/pílula */
-  border-radius: 20px !important; /* Metade da altura para ser oval perfeito */
-  width: 56px !important;  /* Largura maior para o formato pílula */
-  height: 38px !important; /* Altura do botão */
-  
-  /* CENTRALIZAÇÃO REAL */
+  border-radius: 20px !important;
+  width: 56px !important;
+  height: 38px !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -49,17 +45,15 @@
   margin: 0 !important;
 }
 
-/* Garante que o ícone dentro não tenha margens */
 .nav-btn mat-icon {
   margin: 0 !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  width: 24px !important;  /* Tamanho padrão do ícone */
+  width: 24px !important;
   height: 24px !important;
 }
 
-/* Ajusta a área de clique e o efeito visual (ripple) para o novo formato */
 ::ng-deep .nav-btn .mat-mdc-button-touch-target,
 ::ng-deep .nav-btn .mat-mdc-button-ripple {
   border-radius: 20px !important;
@@ -67,24 +61,157 @@
   height: 100% !important;
 }
 
-/* Remove qualquer deslocamento interno do Material 3 */
 ::ng-deep .nav-btn .mdc-icon-button__link {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
 }
 
-.spacer { flex: 1 1 auto; }
+.spacer {
+  flex: 1 1 auto;
+}
 
 .user-email {
-  font-size: 0.9rem;
-  opacity: 0.9;
+  font-size: 1rem;
+}
+
+.nav-pill-list mat-list-item:hover {
+  background-color: rgb(44, 0, 36);
+}
+
+.nav-title-btn {
+  color: #005cbb !important;
+}
+/* END NAVBAR */
+
+/* CONTENT */
+.content-area {
+  background-color: #f0f2f5;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.page-container {
+  display: flex;
+  justify-content: center;
+  min-height: 100%;
+  box-sizing: border-box;
+}
+
+.centered-sheet {
+  background-color: #ffffff;
+  width: 100%;
+  max-width: 1168px;
+  min-height: calc(100vh - 150px);
+  padding: 32px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+}
+/* END CONTENT */
+
+/* ENTITY MAP */
+.map-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 2000;
+  cursor: pointer;
+}
+
+.top-map-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  width: 960px; 
+  max-width: 95vw;
+  max-height: 420px;
+  background-color: #ffffff;
+  z-index: 2001;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  border-bottom-left-radius: 24px;
+  border-bottom-right-radius: 24px;
+  display: flex;
+  flex-direction: column;
+
+  height: auto; 
+  max-height: 80vh;
+  overflow-y: auto; 
+}
+
+.drawer-header {
+  position: relative;
+  display: flex;
+  justify-content: center; 
+  align-items: center;
+ 
+  border-bottom: 1px solid #eee;
+}
+
+.drawer-header h4 {
+  margin: 0;
+  text-align: center;
+  flex: 1; 
+}
+
+.drawer-header button {
+  position: absolute;
+  right: 20px;
+}
+
+.map-content {
+  flex: 1;
+  overflow: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.placeholder-map {
+  width: 80%;
+  height: 80%;
+  border: 2px dashed #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fafafa;
+}
+/* END ENTITY MAP */
+
+/* SIDENAV */
+.nav-pill-header {
+  margin: 4px 0px !important;
+  border-radius: 28px !important;
+  padding: 0 16px !important;
+  font-family: inherit;
+}
+
+.menu-icon {
+  margin-right: 15px;
+  margin-left: 2px;
+}
+
+.nav-pill-list mat-list-item {
+  margin: 4px 12px;
+  border-radius: 28px;
+  height: 56px !important;
+}
+
+.sidenav-wrapper {
+  flex: 1;
 }
 
 .custom-sidenav {
   width: 280px;
-  border-right: none;
-  background-color: #fdfdfd; 
+  border-right: 1px solid #e0e0e0;
+  background-color: #fdfdfd;
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.05);
 }
 
 .list-label {
@@ -95,25 +222,25 @@
   letter-spacing: 0.1em;
 }
 
-.nav-pill-list mat-list-item {
-  margin: 4px 12px;
-  border-radius: 28px; 
-  height: 56px !important;
-}
-
 .nav-pill-list mat-list-item:hover {
-  background-color: rgba(0, 92, 187, 0.08);
+  background-color: rgb(44, 0, 36);
 }
 
-.content-area {
-  background-color: #f8f9fa;
+.main-toolbar {
+  z-index: 1000;
 }
 
-.inner-content {
-  padding: 24px;
+.menu-expansion-panel {
+  background: transparent !important;
+  margin: 0 !important;
 }
 
-.nav-title-btn{
-  color: #005cbb !important;
+::ng-deep .menu-expansion-panel .mat-expansion-panel-body {
+  padding: 0 0 0 24px !important; 
+}
+
+.submenu-list mat-list-item {
+  margin: 2px 12px !important;
+  height: 48px !important; 
 }
 

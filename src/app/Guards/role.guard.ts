@@ -1,21 +1,19 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { AuthService } from '../Services/auth.service';
-import { ClaimType } from '../Models/Entities/User/ClaimType.enum';
+import { ClaimType } from '../Models/UserAggregate/Enums/ClaimType.enum';
+import { DomainUserService } from '../Services/domain-user.service';
 
 export const roleGuard: CanActivateFn = (route, state) => {
-  const authService = inject(AuthService);
-  const router = inject(Router);
 
+  const router = inject(Router);
+  const _userService = inject(DomainUserService);
   const expectedClaim = route.data['expectedClaim'] as ClaimType;
 
-  if (authService.isAdmin()) {
+  if (_userService.isAdmin())
     return true;
-  }
 
-  if (expectedClaim === ClaimType.User && authService.isUser()) {
+  if (expectedClaim === ClaimType.User && _userService.isUser())
     return true;
-  }
 
   console.warn("Acesso negado à rota:", state.url);
   router.navigate(['/home']);

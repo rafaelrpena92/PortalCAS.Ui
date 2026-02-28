@@ -1,0 +1,68 @@
+.map-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  padding: 10px;
+}
+
+
+#Cascavel:hover #CascavelMap {
+  fill: #c44b8e!important; 
+  cursor: pointer;
+  transition: fill 0.5s ease;
+}
+
+#Umuarama:hover #UmuaramaMap {
+  fill: #ca4246!important; 
+  cursor: pointer;
+  transition: fill 0.5s ease;
+}
+
+#Maringa:hover #MaringaMap {
+  fill: #e4373d !important; 
+  cursor: pointer;
+  transition: fill 0.5s ease;
+}
+
+#Apucarana:hover #ApucaranaMap {
+  fill: #0b3f4e!important; 
+  cursor: pointer;
+  transition: fill 0.5s ease;
+}
+
+#FranciscoBeltrao:hover #FranciscoBeltraoMap {
+  fill: #691213!important; 
+  cursor: pointer;
+  transition: fill 0.5s ease;
+}
+
+#Guarapuava:hover #GuarapuavaMap {
+  fill: #f3090d !important; 
+  cursor: pointer;
+  transition: fill 0.5s ease;
+}
+
+#Curitiba:hover #CuritibaMap {
+  fill: #1292b9!important; 
+  cursor: pointer;
+  transition: fill 0.5s ease;
+}
+
+svg {
+ 
+  width: 100% !important;
+  height: auto !important;
+  max-width: 800px; 
+  filter: drop-shadow(0px 5px 10px rgba(0, 0, 0, 0.3));
+  transition: all 0.3s ease;
+}
+
+.regiao-desabilitada {
+  pointer-events: none; 
+  opacity: 0.5;         
+  filter: grayscale(1); 
+  cursor: default;
+}
+

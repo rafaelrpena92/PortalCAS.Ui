@@ -3,7 +3,7 @@
         <div class="row g-0">
 
             <!-- Coluna 8 (FOTO) -->
-            <div class="col-md-8 side-image">
+            <div class="col-md-8 side-image hide-770">
                 <app-side-image></app-side-image>
             </div>
 
@@ -12,8 +12,9 @@
                 <img src="img/logo.png" alt="Logo" class="img-fluid mx-auto d-block mb-3"
                     style="max-height: 105px; width: auto;">
 
-                <h4 class="mb-4 fw-bold"></h4>
+                <h4 class="mb-4 fw-bold show-770"></h4>
 
+                <h4 class="mb-5 fw-bold"></h4>
                 @if (showSignIn) {
                 <div class="enter-by-left">
                     <app-sign-in (changeLoginAction)="ToggleForm()"></app-sign-in>
@@ -23,7 +24,8 @@
                     <app-new-user (changeLoginAction)="ToggleForm()"></app-new-user>
                 </div>
                 }
-
+                
+                <h4 class="mb-5 fw-bold show-770" ></h4>
             </div>
         </div>
     </div>
