@@ -1,10 +1,8 @@
-import { inject, Injectable } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { Injectable } from '@angular/core';
 import Swal, { SweetAlertIcon } from 'sweetalert2';
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
-  private snack = inject(MatSnackBar);
 
   smallMessagePopup(icon: SweetAlertIcon, message: string, action?: () => void, timer: number = 1500) {
     Swal.fire({
@@ -61,10 +59,4 @@ export class NotificationService {
       }
     });
   }
-
-  //EXEMPLOS
-  // this.notification.MessagePopup("success", "Erro ao logar:", "Email ou senha inválidos");
-  // this.notification.MiniMessagePopup("success", "", "mensagem")
-  // this.notification.ConfirmMessagePopup("info", "titulo", "mensagem", "confirmar", "cancelar", () => this.Teste() )
-
 }

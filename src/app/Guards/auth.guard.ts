@@ -1,22 +1,19 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../Services/auth.service';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
-export const authGuard: CanActivateFn = (route, state) => {
+export const authGuard: CanActivateFn = async (route, state) => {
+
+    const _authService = inject(AuthService);
     const router = inject(Router);
-    const authService = inject(AuthService);
-    const auth = getAuth();
 
-    return new Promise((resolve) => {
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                resolve(true);
-            } else {
-                console.log("Acesso negado, redirecionando...");
-                router.navigate(['/login']);
-                resolve(false);
-            }
-        });
-    });
+    await _authService.authReadyPromise; // Aguarda o Firebase inicializar
+
+    if (_authService.userFirebase()) {
+        return true;
+    }
+
+    //SE NAO TIVER ACESSO VAI PARA O LOGIN
+    router.navigate(['/login']);
+    return false;
 };

@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { initializeApp } from 'firebase/app';
 import {
   getAuth,
@@ -11,9 +11,7 @@ import {
   onIdTokenChanged
 } from 'firebase/auth';
 import { environment } from '../../environments/environment';
-import { LoginService } from './Api/login.service';
-import { DomainUser } from '../Models/Entities/User/DomainUser.model';
-import { ClaimType } from '../Models/Entities/User/ClaimType.enum';
+import { DomainUserService } from './domain-user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -22,45 +20,34 @@ export class AuthService {
   private app = initializeApp(environment.firebase);
   private auth = getAuth(this.app);
   private googleProvider = new GoogleAuthProvider();
-  private loginService = inject(LoginService);
+  private userService = inject(DomainUserService);
 
   userFirebase = signal<FirebaseUser | null>(null);
   tokenSignal = signal<string | null>(null);
-  userDomain = signal<DomainUser | null>(null);
+  isAuthInitialized = signal<boolean>(false);
 
-  isAdmin = computed(() => this.userDomain()?.claimType === ClaimType.Admin);
-  isUser = computed(() => this.isAdmin() || this.userDomain()?.claimType === ClaimType.User);
+  private resolveReady!: (value: boolean) => void;
 
-  hasClaim(type: ClaimType): boolean {
-    return this.userDomain()?.claimType === type;
-  }
+  public authReadyPromise = new Promise<boolean>(resolve => {
+    this.resolveReady = resolve;
+  });
 
   constructor() {
     onIdTokenChanged(this.auth, async (user) => {
+      if (user) {
+        // Usuário logado ou token renovado
+        const token = await user.getIdToken();
+        this.tokenSignal.set(token);
+        this.userFirebase.set(user);
 
-      if (!user) {
-        this.userFirebase.set(null);
-        this.tokenSignal.set(null);
-        this.userDomain.set(null);
-        console.log("Firebase Auth: Sessão encerrada.");
-        return;
+      } else {
+        // USUÁRIO SAIU (Logout ou Sessão Expirada)
+        this.clearSession();
       }
 
-      const isNewSession = this.userFirebase() === null;
-
-      const token = await user.getIdToken();
-      this.tokenSignal.set(token);
-      this.userFirebase.set(user);
-
-      console.log("Firebase Auth: Usuário detectado e Token atualizado.");
-
-      if (isNewSession) {
-        console.log("Iniciando sincronização com backend...");
-        this.getUserData();
-      }
+      this.resolveReady(true); 
     });
   }
-
 
   getToken(): string | null {
     return this.tokenSignal();
@@ -99,23 +86,16 @@ export class AuthService {
   async logout() {
     try {
       await signOut(this.auth);
+      this.clearSession();
     } catch (error) {
       console.error("Erro ao fazer logout", error);
       throw error;
     }
   }
 
-  private getUserData() {
-    this.loginService.GetMe().subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.userDomain.set(response.data);
-          console.log("Dados do banco SQL sincronizados:", response.data);
-        }
-      },
-      error: (err) => {
-        console.error("Erro ao sincronizar com backend:", err);
-      }
-    });
+  private clearSession() {
+    this.userFirebase.set(null);
+    this.tokenSignal.set(null);
+    this.userService.clear();
   }
 }

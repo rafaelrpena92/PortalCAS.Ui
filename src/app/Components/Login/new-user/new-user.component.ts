@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../Services/auth.service';
-import { NewUser } from '../../../Models/Entities/User/new-user.model';
+import { LoginNewUser } from '../../../Models/UserAggregate/Entities/login-new-user.model';
 import { NotificationService } from '../../../Services/notification.service';
 import { isValidEmail } from '../../../Utils/valitadors.util';
 
@@ -16,13 +16,13 @@ import { isValidEmail } from '../../../Utils/valitadors.util';
   styleUrl: './new-user.component.css'
 })
 export class NewUserComponent {
-  newUser: NewUser = new NewUser();
 
-  constructor(
-    private router: Router,
-    private authService: AuthService,
-    private notification: NotificationService
-  ) { }
+  private router = inject(Router);
+  private notification = inject(NotificationService);
+  private _authService = inject(AuthService);
+  newUser: LoginNewUser = new LoginNewUser();
+
+  constructor() { }
 
   @Output() changeLoginAction = new EventEmitter<void>();
 
@@ -34,7 +34,7 @@ export class NewUserComponent {
     }
 
     try {
-      await this.authService.signUpWithEmail(this.newUser.email, this.newUser.password);
+      await this._authService.signUpWithEmail(this.newUser.email, this.newUser.password);
 
       this.notification.smallMessagePopup("success", "Conta criada com sucesso!",
         () => {

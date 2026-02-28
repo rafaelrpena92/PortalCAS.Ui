@@ -1,1 +1,109 @@
-<p>user-config works!</p>
+<div class="container-fluid ">
+    <label class="title">Configuração de Usuários</label>
+
+    <hr class="row">
+
+    <div class="row justify-content-center align-items-end" style="padding: 20px;">
+        <div class="col-sm-6">
+            <label class="form-label">Usuário</label>
+            <input type="text" class="form-control" name="email" [(ngModel)]="email">
+        </div>
+
+        <div class="col-sm-auto">
+            <button type="button" (click)="searchUsers()" mat-flat-button color="primary">
+                <mat-icon>search</mat-icon>
+                Pesquisar
+            </button>
+        </div>
+    </div>
+
+    <!-- TABELA BOOTSTRAP -->
+
+    <div class="table-container shadow-sm">
+        <div class="table-header-title">
+            Usuários
+        </div>
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th style="width: 55%;">E-mail</th>
+                    <th style="width: 15%;">Tipo</th>
+                    <th class="text-center" style="width: 15%;">Status</th>
+                    <th class="text-center" style="width: 15%;">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let user of pagerResponse?.items">
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.claimTypeEnumHandler.description }}</td>
+                    <td class="text-center">
+                        <span class="badge-custom" [ngClass]="user.isActive? 'status-ativo' : 'status-inativo'">
+                            {{ user.isActive ? 'Ativo' : 'Inativo' }}
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        <button class="btn btn-pill-edit">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+
+                        <button class="btn btn-pill-delete">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </td>
+                </tr>
+                <tr *ngIf="pagerResponse.items.length == 0" >
+                    <td colspan="4" class="text-center register-not-found">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                         Não foram encontrados resultados para a pesquisa
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- PAGINADOR -->
+        <mat-paginator #paginator 
+               *ngIf="pagerResponse.items.length > 0" 
+               class="demo-paginator"
+               (page)="handlePageEvent($event)"
+               [length]="pagerResponse?.totalRows || 0"
+               [pageSize]="pagerRequest.pageSize"
+               [pageIndex]="pagerRequest.pageNumber - 1" 
+               [pageSizeOptions]="pageSizeOptions"
+               [showFirstLastButtons]="true"
+               aria-label="Selecionar página">
+</mat-paginator>
+    </div>
+
+    <div class="col-sm-12">
+        <button mat-button>
+            <mat-icon>arrow_back_ios</mat-icon>
+            Voltar
+        </button>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+<style>
+.demo-paginator{
+    background-color: #f8f9ff;
+}
+
+::ng-deep .mat-mdc-paginator-container {
+    justify-content: space-between !important;
+    padding: 0 16px !important;
+}
+
+.register-not-found{
+    background-color: white;
+    color: darkgoldenrod;
+}
+</style>

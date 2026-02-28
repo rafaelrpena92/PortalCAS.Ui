@@ -1,11 +1,11 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
 import { FormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../Services/auth.service';
 import { NotificationService } from '../../../Services/notification.service';
-import { User } from '../../../Models/Entities/User/user.model';
+import { LoginUser } from '../../../Models/UserAggregate/Entities/login-user.model';
 import { isValidEmail } from '../../../Utils/valitadors.util';
 
 
@@ -16,12 +16,13 @@ import { isValidEmail } from '../../../Utils/valitadors.util';
   styleUrl: './sign-in.component.css'
 })
 export class SignInComponent {
-  user: User = new User();
 
-  constructor(
-    private router: Router,
-    private authService: AuthService,
-    private notification: NotificationService) { }
+  private router = inject(Router);
+  private notification = inject(NotificationService);
+  private _authService = inject(AuthService);
+  user: LoginUser = new LoginUser();
+
+  constructor() { }
 
   @Output() changeLoginAction = new EventEmitter<void>();
 
@@ -34,7 +35,7 @@ export class SignInComponent {
         return;
       }
 
-      await this.authService.loginWithEmail(this.user.email, this.user.password);
+      await this._authService.loginWithEmail(this.user.email, this.user.password);
 
       this.notification.smallMessagePopup("success", "Login efetuado com sucesso!",
         () => {
@@ -49,7 +50,7 @@ export class SignInComponent {
 
   async loginWithGoogle() {
     try {
-      await this.authService.loginWithGoogle();
+      await this._authService.loginWithGoogle();
 
       this.notification.smallMessagePopup("success", "Login efetuado com sucesso!",
         () => {

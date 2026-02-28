@@ -1,25 +1,18 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { AuthService } from '../Services/auth.service'; // Importe seu serviço
+import { AuthService } from '../Services/auth.service';
 
-export const guestGuard: CanActivateFn = (route, state) => {
+export const guestGuard: CanActivateFn = async (route, state) => {
+
+    const _authService = inject(AuthService);
     const router = inject(Router);
-    
-    const authService = inject(AuthService); 
-    
-    const auth = getAuth();
 
-    return new Promise((resolve) => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            unsubscribe();
-            if (user) {
-                console.log("Usuário já logado, redirecionando para home...");
-                router.navigate(['/home']);
-                resolve(false);
-            } else {
-                resolve(true);
-            }
-        });
-    });
+    await _authService.authReadyPromise; // Aguarda o Firebase inicializar
+
+    if (_authService.userFirebase()) {
+        router.navigate(['/home']);
+        return false;
+    }
+
+    return true
 };
