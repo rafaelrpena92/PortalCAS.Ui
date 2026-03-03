@@ -42,12 +42,6 @@ export const routes: Routes = [
                 component: ConfigurationsComponent,
                 canActivate: [roleGuard],
                 data: { expectedClaim: ClaimType.Admin}
-            },
-            { 
-                path: 'welcome', 
-                component: WelcomeComponent,
-                canActivate: [roleGuard],
-                data: { expectedClaim: ClaimType.User }
             }
         ]
     },

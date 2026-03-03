@@ -51,7 +51,7 @@
                         </button>
                     </td>
                 </tr>
-                <tr *ngIf="pagerResponse.items.length == 0" >
+                <tr *ngIf="pagerResponse?.items?.length == 0" >
                     <td colspan="4" class="text-center register-not-found">
                         <i class="fa-solid fa-triangle-exclamation"></i>
                          Não foram encontrados resultados para a pesquisa
@@ -62,7 +62,7 @@
 
         <!-- PAGINADOR -->
         <mat-paginator #paginator 
-               *ngIf="pagerResponse.items.length > 0" 
+               *ngIf="pagerResponse?.items?.length > 0" 
                class="demo-paginator"
                (page)="handlePageEvent($event)"
                [length]="pagerResponse?.totalRows || 0"
