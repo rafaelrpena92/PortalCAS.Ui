@@ -2,17 +2,25 @@
 
 <form (submit)="$event.preventDefault()">
     <div class="mb-3">
-        <label class="form-label">E-mail</label><label class="color-red">*</label>
+        <label class="label">E-mail</label><label class="color-red">*</label>
         <input type="email" class="form-control" name="email" [(ngModel)]="newUser.email" placeholder="exemplo@email.com">
     </div>
     <div class="mb-3">
-        <label class="form-label">Senha</label><label class="color-red">*</label>
+        <label class="label">Senha</label><label class="color-red">*</label>
          <input type="password" class="form-control" name="password" [(ngModel)]="newUser.password" placeholder="Mínimo 6 caracteres">
     </div>
 
     <div class="mb-4" >
-        <label class="form-label">Confirmar Senha</label><label class="color-red">*</label>
+        <label class="label">Confirmar Senha</label><label class="color-red">*</label>
         <input type="password" class="form-control" name="confirmPassword" [(ngModel)]="newUser.confirmPassword" placeholder="Repita a senha">
+    </div>
+
+    <div class="mb-4">
+        <label class="label" for="cidade-cadastro">Cidade onde mora</label><label class="color-red">*</label>
+        <app-city-picker inputId="cidade-cadastro" (cityChange)="city = $event"></app-city-picker>
+        @if (city?.entityName) {
+        <div class="cas-info">Seu CAS: <strong>{{ city?.entityName }}</strong>. Você pode ver todos os CAS, mas só se inscreve nas bancas dele.</div>
+        }
     </div>
 
     <div class="d-grid gap-2 mt-3">

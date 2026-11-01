@@ -1,0 +1,665 @@
+/* =========================================================
+   1. CONFIGURAÇÃO DO TEMA DO ANGULAR MATERIAL 19 (M3)
+   ========================================================= */
+@use "@angular/material" as mat;
+
+@include mat.core();
+
+$meu-tema: mat.define-theme(
+  (
+    color: (
+      theme-type: light,
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
+    ),
+    typography: (
+      brand-family: 'Roboto, "Helvetica Neue", sans-serif',
+      plain-family: 'Roboto, "Helvetica Neue", sans-serif',
+    ),
+
+    density: (
+      scale: -2,
+    ),
+  )
+);
+
+// Aplica o tema
+html {
+  @include mat.all-component-themes($meu-tema);
+}
+
+.btn-sm {
+  height: 32px !important;
+  padding: 0 12px !important;
+  font-size: 0.8rem !important;
+}
+
+.btn-md {
+  height: 40px !important;
+  padding: 0 16px !important;
+  font-size: 0.9rem !important;
+}
+
+.btn-lg {
+  height: 48px !important;
+  padding: 0 24px !important;
+  font-size: 1.1rem !important;
+}
+
+/* =========================================================
+   ESTILOS GLOBAIS E CLASSES UTILITÁRIAS
+   ========================================================= */
+
+.linha {
+  border: 1px solid red;
+}
+
+body {
+  background-color: #e9ecef !important;
+  margin: 0;
+  padding: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.link {
+  text-decoration: none;
+  cursor: pointer;
+  color: black;
+  font-size: 0.9rem;
+}
+
+.link:hover {
+  color: #005cbb;
+}
+
+.lbl-Title {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.form-control {
+  border-color: #b6b6b6;
+}
+
+.form-control:focus {
+  outline: none;
+  box-shadow: none;
+  border-color: #005cbb;
+}
+
+.label {
+  font-weight: 500;
+  color: black;
+}
+
+.span-text {
+  display: block;
+  font-size: 14px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-top: 15px;
+  margin-bottom: 20px;
+}
+
+mat-slide-toggle {
+  transform: scale(0.8);
+  transform-origin: right center;
+}
+
+.custom-hr{
+    margin-top: -10px;
+}
+@media (width < 770px) {
+  .hide-770 {
+    display: none !important;
+  }
+}
+
+@media (width > 770px) {
+  .show-770 {
+    display: flex;
+  }
+}
+
+/* =========================================================
+   MARGINS E PADDINGS
+   ========================================================= */
+
+.m-t-5 {
+  margin-top: 5px !important;
+}
+.m-t-10 {
+  margin-top: 10px !important;
+}
+.m-t-15 {
+  margin-top: 15px !important;
+}
+.m-t-20 {
+  margin-top: 20px !important;
+}
+.m-t-25 {
+  margin-top: 25px !important;
+}
+.m-t-30 {
+  margin-top: 30px !important;
+}
+
+.m-b-5 {
+  margin-bottom: 5px !important;
+}
+.m-b-10 {
+  margin-bottom: 10px !important;
+}
+.m-b-15 {
+  margin-bottom: 15px !important;
+}
+.m-b-20 {
+  margin-bottom: 20px !important;
+}
+.m-b-25 {
+  margin-bottom: 25px !important;
+}
+.m-b-30 {
+  margin-bottom: 30px !important;
+}
+
+.m-r-5 {
+  margin-right: 5px !important;
+}
+.m-r-10 {
+  margin-right: 10px !important;
+}
+.m-r-15 {
+  margin-right: 15px !important;
+}
+.m-r-20 {
+  margin-right: 20px !important;
+}
+.m-r-25 {
+  margin-right: 25px !important;
+}
+.m-r-30 {
+  margin-right: 30px !important;
+}
+
+.m-l-5 {
+  margin-left: 5px !important;
+}
+.m-l-10 {
+  margin-left: 10px !important;
+}
+.m-l-15 {
+  margin-left: 15px !important;
+}
+.m-l-20 {
+  margin-left: 20px !important;
+}
+.m-l-25 {
+  margin-left: 25px !important;
+}
+.m-l-30 {
+  margin-left: 30px !important;
+}
+
+.p-t-5 {
+  padding-top: 5px !important;
+}
+.p-t-10 {
+  padding-top: 10px !important;
+}
+.p-t-15 {
+  padding-top: 15px !important;
+}
+.p-t-20 {
+  padding-top: 20px !important;
+}
+.p-t-25 {
+  padding-top: 25px !important;
+}
+.p-t-30 {
+  padding-top: 30px !important;
+}
+
+.p-b-5 {
+  padding-bottom: 5px !important;
+}
+.p-b-10 {
+  padding-bottom: 10px !important;
+}
+.p-b-15 {
+  padding-bottom: 15px !important;
+}
+.p-b-20 {
+  padding-bottom: 20px !important;
+}
+.p-b-25 {
+  padding-bottom: 25px !important;
+}
+.p-b-30 {
+  padding-bottom: 30px !important;
+}
+
+.p-r-5 {
+  padding-right: 5px !important;
+}
+.p-r-10 {
+  padding-right: 10px !important;
+}
+.p-r-15 {
+  padding-right: 15px !important;
+}
+.p-r-20 {
+  padding-right: 20px !important;
+}
+.p-r-25 {
+  padding-right: 25px !important;
+}
+.p-r-30 {
+  padding-right: 30px !important;
+}
+
+.p-l-5 {
+  padding-left: 5px !important;
+}
+.p-l-10 {
+  padding-left: 10px !important;
+}
+.p-l-15 {
+  padding-left: 15px !important;
+}
+.p-l-20 {
+  padding-left: 20px !important;
+}
+.p-l-25 {
+  padding-left: 25px !important;
+}
+.p-l-30 {
+  padding-left: 30px !important;
+}
+
+/* =========================================================
+   SweetAlert
+   ========================================================= */
+
+.swal-custom-small {
+  font-size: 0.9rem !important;
+}
+
+.swal-custom-small .swal2-title {
+  font-size: 1.2rem !important;
+}
+
+.swal-custom-small .swal2-styled {
+  padding: 7px 20px !important;
+  /* Diminui o tamanho do botão */
+  font-size: 0.9rem !important;
+}
+
+/* =========================================================
+   Tabela
+   ========================================================= */
+
+.table-container {
+  position: relative; 
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #edf2f7;
+  margin: 20px 0;
+  background: white;
+}
+
+.modern-shadow {
+  box-shadow: 0 10px 15px -5px rgba(0, 0, 0, 0.3), 
+              0 8px 15px -6px rgba(0, 0, 0, 0.01);
+}
+
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+.custom-table thead th {
+  background-color: #d7e3ff !important;
+  color: #005cbb !important;
+  padding: 12px 16px; 
+  font-weight: 500;
+  text-align: left;
+  border: none;
+}
+
+.custom-table tbody td {
+  padding: 10px 16px; 
+  border-bottom: 1px solid #f0f0f0;
+  color: #444;
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+.custom-table tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+.custom-table tbody tr:hover {
+  background-color: #f8faff ;
+}
+
+.badge-custom {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-ativo {
+   background-color: #ecfdf5;
+  color: #059669;
+}
+
+.status-inativo {
+   background-color: #fef2f2;
+  color: #dc2626;
+}
+
+.btn-pill-edit,
+.btn-pill-delete {
+
+  padding: 6px 6px;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  margin: 0 3px;
+  background: transparent;
+}
+
+.btn-pill-edit, .btn-pill-delete {
+  color: #272727;
+}
+
+.btn-pill-edit:hover {
+  background-color: #dbeafe;
+  color: #005bc1;
+}
+
+.btn-pill-delete:hover {
+  background-color: #fed7d7;
+  color: #e53e3e;
+}
+
+.btn-pill-edit mat-icon,
+.btn-pill-delete mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+/* Paginador */
+
+.btn-page, .btn-arrow {
+  border: none;
+  background: transparent;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  color: #64748b;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.btn-arrow { font-size: 24px; }
+
+.btn-page:hover:not(.ativo):not(:disabled),
+.btn-arrow:hover:not(:disabled) {
+  background-color: #f1f5f9;
+  color: #1e293b;
+}
+
+.btn-page.ativo {
+  background-color: #dbeafe;
+  color: #005cbb;
+  font-weight: 700;
+}
+
+.btn-arrow:disabled, .btn-page:disabled {
+  opacity: 0.25;
+}
+
+.register-not-found {
+  color: #d97706;
+  font-size: 14px;
+}
+
+// Table scroll
+
+.table-container.table-scroll {
+  margin: 10px 4px 18px 4px;
+}
+
+.table-scroll thead {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.table-scroll tbody {
+  display: block;
+  max-height: 220px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.table-scroll tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.table-scroll tbody::-webkit-scrollbar {
+  width: 5px;
+}
+.table-scroll tbody::-webkit-scrollbar-track {
+  background: transparent;
+}
+.table-scroll tbody::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 10px;
+}
+.table-scroll tbody::-webkit-scrollbar-thumb:hover {
+  background-color: #94a3b8;
+}
+
+/* =========================================================
+   Overlay
+   ========================================================= */
+
+   .loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(2px); /* Efeito de vidro fosco */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  z-index: 10;
+  color: #005cbb;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+/* Spinner animado puro CSS (sem precisar instalar nada) */
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e0e7ff;
+  border-top: 3px solid #005cbb;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* =========================================================
+   Botões
+   ========================================================= */
+
+.btn-dialog-cancel {
+  border: 1.5px solid #dc2626 !important;
+  color: #dc2626 !important;
+  background-color: transparent !important;
+  border-radius: 20px !important; 
+  padding: 0 20px !important;
+  font-weight: 500 !important;
+  height: 38px !important;
+  transition: all 0.2s ease;
+}
+
+.btn-dialog-cancel:hover {
+  background-color: #fef2f2 !important;
+  border-color: #b91c1c !important;
+  color: #b91c1c !important;
+}
+
+.btn-dialog-save {
+  background-color: #005cbb !important; 
+  color: #ffffff !important;
+  border-radius: 20px !important;
+  padding: 0 24px !important;
+  font-weight: 500 !important;
+  height: 38px !important;
+  border: none !important;
+  transition: all 0.2s ease;
+}
+
+.btn-dialog-save:hover {
+  background-color: #004b99;
+  box-shadow: 0 2px 6px rgba(0, 92, 187, 0.25);
+}
+
+/* Botão de Adicionar (Tonal Circular) */
+.btn-add-entity {
+  background-color: #dbeafe; /* Azul claro suave */
+  color: #005cbb;           /* Azul do seu tema */
+  border: 1px solid #bfdbfe;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;        /* Perfeitamente redondo */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+  margin-bottom: 20px; 
+}
+
+/* Efeito ao passar o mouse */
+.btn-add-entity:hover {
+  background-color: #bfdbfe;
+  color: #004b99;
+  transform: scale(1.06); /* Leve animação de pulsar */
+}
+
+/* Centralização perfeita do ícone + */
+.btn-add-entity mat-icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =========================================================
+   dialog
+   ========================================================= */
+
+mat-dialog-content {
+  overflow: visible !important;
+  padding-bottom: 8px !important;
+}
+
+.dialog-actions {
+  padding: 16px 24px 20px 24px !important;
+  justify-content: flex-end;
+}
+
+/* =========================================================
+   Estilo do Dropdown (Painel do mat-select)
+   ========================================================= */
+
+/* 1. Limita para ~5 itens e define fundo e bordas */
+.custom-select-panel {
+  max-height: 220px !important;
+  background-color: #ffffff !important;
+  border-radius: 12px !important;
+  border: 1px solid #edf2f7 !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15) !important;
+  padding: 4px 0 !important;
+}
+
+/* 2. Itens */
+.custom-select-panel .mat-mdc-option {
+  font-size: 14px !important;
+  color: #334155 !important;
+  min-height: 42px !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+}
+
+/* 3. Hover (Azul clarinho) */
+.custom-select-panel .mat-mdc-option:hover:not(.mdc-list-item--disabled) {
+  background-color: #f8faff !important;
+  color: #005cbb !important;
+}
+
+.custom-select-panel .mat-mdc-option:last-child {
+  border-bottom: none !important;
+}
+
+/* 4. Selecionado */
+.custom-select-panel .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled) {
+  background-color: #dbeafe !important;
+  color: #005cbb !important;
+  font-weight: 600 !important;
+}
+
+/* 5. Scrollbar */
+.custom-select-panel::-webkit-scrollbar {
+  width: 5px !important;
+}
+.custom-select-panel::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+.custom-select-panel::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1 !important;
+  border-radius: 10px !important;
+}

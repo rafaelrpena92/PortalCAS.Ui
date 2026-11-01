@@ -1,9 +1,21 @@
-import { Entity } from "../../EntityAggregate/Entities/Entity.model";
+import { EntityRoleItem } from "../../EntityAggregate/Entities/Entity.model";
 
-export class User {
-  email: string = '';
-  entities: Entity[] | undefined;
-  status?: boolean; 
-  IsActive?: boolean;
-  claimType?: number;  
+/** Usuário na tela de gestão de usuários. */
+export interface User {
+  userId: string;
+  email: string;
+  name?: string | null;
+  isActive: boolean;
+  createdAt: Date;
+  claimType: number;
+  cityName?: string | null;
+  residenceEntityName?: string | null;
+  roles: EntityRoleItem[];
+}
+
+export interface SaveUser {
+  userId: string;
+  isActive: boolean;
+  isAdminGeral?: boolean | null;
+  roles: EntityRoleItem[];
 }

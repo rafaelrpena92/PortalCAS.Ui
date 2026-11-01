@@ -1,0 +1,43 @@
+.page { width: 100%; display: flex; flex-direction: column; gap: 20px; }
+.page-title { margin: 0; font-size: 1.8rem; font-weight: 700; }
+.page-sub { margin: 4px 0 0; color: #555b66; }
+
+.card {
+  background: #fff;
+  border: 1px solid #d4d8de;
+  border-radius: 24px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card h2 { margin: 0; font-size: 1.2rem; font-weight: 700; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.field { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: 0.9rem; }
+.field.full { grid-column: 1 / -1; }
+.readonly { padding: 10px 12px; border-radius: 10px; background: #f6f7f9; font-weight: 400; color: #3d434d; }
+
+.cas-line { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; padding: 10px 14px; border-radius: 14px; background: #f6f7f9; color: #3d434d; }
+.chip { padding: 3px 10px; border-radius: 8px; background: #e8f1fa; color: #004e87; font-weight: 600; font-size: 0.8rem; }
+.chip.admin { background: #fff6bf; color: #4a3d00; }
+
+.warning {
+  display: flex; flex-direction: column; gap: 10px;
+  padding: 16px; border-radius: 16px;
+  background: #fde8e8; border: 1px solid #f1b8ba; color: #6e0b0e;
+}
+.warning .check { display: flex; gap: 10px; align-items: center; font-weight: 600; cursor: pointer; }
+.warning .check input { width: 18px; height: 18px; }
+
+.roles { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.roles li { display: flex; gap: 10px; align-items: center; }
+
+.actions { display: flex; justify-content: flex-end; }
+
+@media (max-width: 600px) {
+  .card { padding: 16px; border-radius: 20px; }
+  .page-title { font-size: 1.5rem; }
+  .actions button { width: 100%; }
+}

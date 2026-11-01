@@ -1,0 +1,61 @@
+:host { display: block; min-width: 0; }
+
+.acp-field {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 6px 0 12px;
+  border: 1px solid #c9ced6;
+  border-radius: 12px;
+  background: #fff;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.acp-field:hover { border-color: #8fb8dc; }
+.acp-field:focus-within, .acp-field.open { border-color: #0067b1; box-shadow: 0 0 0 3px rgba(0, 103, 177, 0.15); }
+
+.acp-field .lead { color: #8a919c; font-size: 20px; width: 20px; height: 20px; }
+.acp-field input {
+  flex: 1; min-width: 0; height: 100%;
+  border: none; outline: none; background: transparent;
+  font: 400 0.95rem Roboto, sans-serif; color: #15171c;
+}
+.acp-field input::placeholder { color: #8a919c; }
+
+.clear {
+  width: 32px; height: 32px; border: none; border-radius: 50%; background: transparent; color: #5b616b;
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+}
+.clear:hover { background: #f1f3f6; }
+.clear mat-icon { font-size: 18px; width: 18px; height: 18px; }
+
+/* Painel: mesmo visual do app-combobox */
+.cbx-panel {
+  width: 100%;
+  box-sizing: border-box;
+  background: #fff;
+  border: 1px solid #e3e6ea;
+  border-radius: 14px;
+  box-shadow: 0 16px 40px -12px rgba(21, 23, 28, 0.28);
+  padding: 6px;
+  font-family: Roboto, sans-serif;
+}
+
+.cbx-list { list-style: none; margin: 0; padding: 0; max-height: 320px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #c9ced6 transparent; }
+.cbx-list::-webkit-scrollbar { width: 6px; }
+.cbx-list::-webkit-scrollbar-thumb { background: #c9ced6; border-radius: 3px; }
+
+.cbx-option {
+  display: flex; align-items: center; gap: 10px;
+  min-height: 42px; padding: 0 10px; border-radius: 10px;
+  font-size: 0.95rem; color: #15171c; cursor: pointer;
+}
+.cbx-option.active { background: #f2f7fd; }
+.cbx-option.selected { font-weight: 600; color: #004e87; }
+.cbx-option .label { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cbx-option .dot { flex: 0 0 10px; height: 10px; border-radius: 50%; box-shadow: 0 0 0 2px #fff, 0 0 0 3px rgba(0, 0, 0, 0.08); }
+.cbx-option .chip { padding: 2px 8px; border-radius: 6px; background: #e8f1fa; color: #004e87; font-size: 0.75rem; font-weight: 600; white-space: nowrap; }
+.cbx-option .chip.muted { background: #f1f3f6; color: #8a919c; font-weight: 500; }
+.cbx-option .check { font-size: 18px; width: 18px; height: 18px; color: #0067b1; }
+
+.cbx-empty { padding: 12px; color: #8a919c; font-size: 0.9rem; text-align: center; }

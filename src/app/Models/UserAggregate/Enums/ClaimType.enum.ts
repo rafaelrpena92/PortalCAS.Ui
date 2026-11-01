@@ -1,5 +1,5 @@
+/** Perfil global. Avaliador e Administrador do CAS são papéis por CAS (EntityRole). */
 export enum ClaimType {
-    Admin = 0,
-    User = 1,
-    Guest = 2
+    AdminGeral = 0,
+    Candidato = 1
 }

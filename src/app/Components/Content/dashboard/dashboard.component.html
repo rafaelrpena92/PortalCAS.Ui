@@ -6,10 +6,10 @@
     <div class="top-map-drawer" @slideInOut>
       <div class="drawer-header">
         <div class="text-center">
-          <label class="pt-3 lbl-Title">Selecione a Unidade CAS</label>
+          <label class="pt-3 pb-2 lbl-Title">Selecione a Unidade CAS</label>
         </div>
 
-        <button mat-icon-button (click)="toggleMap()">
+        <button mat-icon-button (click)="toggleMap()" aria-label="Fechar">
           <mat-icon>close</mat-icon>
         </button>
       </div>
@@ -22,85 +22,55 @@
 
   <!-- 2. TOOLBAR -->
   <mat-toolbar class="main-toolbar">
-    <button mat-button (click)="sidenav.toggle()" class="nav-btn nav-title-btn">
+    <button mat-button (click)="sidenav.toggle()" class="nav-btn nav-title-btn" aria-label="Abrir menu">
       <mat-icon>menu</mat-icon>
     </button>
 
     <div class="center-nav">
-      <!-- ADICIONADO O CLIQUE AQUI -->
-      <button mat-button class="nav-title-btn ps-5 pe-5" (click)="toggleMap()">
-        {{ _userService.domainUser()?.selectedEntity?.name }}
+      <button mat-button class="nav-title-btn cas-btn" (click)="toggleMap()" title="Trocar de CAS">
+        {{ _userService.selectedEntity()?.name ?? 'Selecionar CAS' }}
         <mat-icon>{{ isMapOpen ? "expand_less" : "expand_more" }}</mat-icon>
       </button>
     </div>
 
     <span class="spacer"></span>
 
-    <span class="user-email me-3 hide-770">
-      {{_authService.userFirebase()?.email}}
-    </span>
+    @if (_authService.userFirebase()) {
+      <span class="user-email me-3 hide-770">
+        {{_authService.userFirebase()?.email}}
+      </span>
 
-    <button mat-button class="nav-btn nav-title-btn" (click)="Logout()">
-      <mat-icon>logout</mat-icon>
-    </button>
+      <button mat-button class="nav-btn nav-title-btn" (click)="Logout()" aria-label="Sair" title="Sair">
+        <mat-icon>logout</mat-icon>
+      </button>
+    } @else {
+      <a mat-flat-button routerLink="/login" class="btn-entrar">
+        <mat-icon>login</mat-icon>
+        Entrar
+      </a>
+    }
   </mat-toolbar>
 
   <!-- 3. SIDENAV E CONTEÚDO -->
-  <mat-sidenav-container class="sidenav-wrapper" [hasBackdrop]="false">
-    <mat-sidenav #sidenav mode="over" opened="true" class="custom-sidenav">
-      @if (_userService.domainUser()?.selectedEntity) {
-        <mat-nav-list class="nav-pill-list">
-          <div class="text-center mt-3 mb-3">
-            <img src="img/logo.png" alt="Logo" class="logo-img" />
-          </div>
+  <mat-sidenav-container class="sidenav-wrapper" [hasBackdrop]="isMobile()">
+    <mat-sidenav #sidenav [mode]="isMobile() ? 'over' : 'side'" [opened]="!isMobile()" class="custom-sidenav">
+      <mat-nav-list class="nav-pill-list">
+        <div class="text-center mt-3 mb-3">
+          <img src="img/logo.png" alt="Portal CAS" class="logo-img" />
+        </div>
 
-          <a
-            mat-list-item
-            routerLink="/home/welcome"
-            routerLinkActive="active-link"
-          >
-            <mat-icon matListItemIcon>home</mat-icon>
-            <span matListItemTitle>Início</span>
-          </a>
-
-          @if (_userService.isAdmin()) {
-            <mat-expansion-panel
-              class="menu-expansion-panel"
-              [class.mat-elevation-z0]="true"
-            >
-              <mat-expansion-panel-header class="nav-pill-header">
-                <mat-panel-title>
-                  <mat-icon class="menu-icon">settings</mat-icon>
-                  <span class="menu-text">Configurações</span>
-                </mat-panel-title>
-              </mat-expansion-panel-header>
-
-              <mat-nav-list class="submenu-list">
-                <a
-                  mat-list-item
-                  routerLink="/home/userConfiguration"
-                  routerLinkActive="active-link"
-                >
-                  <mat-icon matListItemIcon>people</mat-icon>
-                  <span matListItemTitle>Usuários</span>
-                </a>
-                <!-- <a mat-list-item routerLink="/home/clients" routerLinkActive="active-link">
-              <mat-icon matListItemIcon>business_center</mat-icon>
-              <span matListItemTitle>Clientes</span>
-            </a> -->
-                <a
-                  mat-list-item
-                  routerLink="/home/configuration"
-                  routerLinkActive="active-link"
-                >
-                  <mat-icon matListItemIcon>admin_panel_settings</mat-icon>
-                  <span matListItemTitle>Geral</span>
-                </a>
-              </mat-nav-list>
-            </mat-expansion-panel>
+        @for (section of menu(); track $index) {
+          @if (section.title) {
+            <div class="list-label">{{ section.title }}</div>
           }
-        </mat-nav-list>
-      }
+          @for (item of section.items; track item.link) {
+            <a mat-list-item [routerLink]="item.link" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: item.link === '/' }">
+              <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+              <span matListItemTitle>{{ item.label }}</span>
+            </a>
+          }
+        }
+      </mat-nav-list>
     </mat-sidenav>
 
     <mat-sidenav-content class="content-area">

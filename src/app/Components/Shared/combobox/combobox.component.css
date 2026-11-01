@@ -1,0 +1,66 @@
+:host { display: block; min-width: 0; }
+
+.cbx-trigger {
+  width: 100%;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px 0 14px;
+  border: 1px solid #c9ced6;
+  border-radius: 12px;
+  background: #fff;
+  color: #15171c;
+  font: 500 0.95rem Roboto, sans-serif;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.cbx-trigger.sm { height: 38px; border-radius: 10px; font-size: 0.9rem; }
+.cbx-trigger:hover:not(:disabled) { border-color: #8fb8dc; }
+.cbx-trigger:focus-visible, .cbx-trigger.open { outline: none; border-color: #0067b1; box-shadow: 0 0 0 3px rgba(0, 103, 177, 0.15); }
+.cbx-trigger:disabled { opacity: 0.55; cursor: default; }
+.cbx-trigger.empty { background: #fafbfc; }
+
+.dot { flex: 0 0 10px; height: 10px; border-radius: 50%; box-shadow: 0 0 0 2px #fff, 0 0 0 3px rgba(0, 0, 0, 0.08); }
+.label { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.placeholder { color: #8a919c; font-weight: 400; }
+.chevron { color: #5b616b; transition: transform 0.15s; }
+.cbx-trigger.open .chevron { transform: rotate(180deg); }
+
+/* Painel (fica no overlay, fora do componente) */
+.cbx-panel {
+  background: #fff;
+  border: 1px solid #e3e6ea;
+  border-radius: 14px;
+  box-shadow: 0 16px 40px -12px rgba(21, 23, 28, 0.28);
+  padding: 6px;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: Roboto, sans-serif;
+}
+
+.cbx-search {
+  display: flex; align-items: center; gap: 6px;
+  height: 38px; margin: 0 0 6px; padding: 0 10px;
+  border-radius: 10px; background: #f6f7f9; color: #5b616b;
+}
+.cbx-search input { flex: 1; min-width: 0; border: none; outline: none; background: transparent; font-size: 0.9rem; }
+.cbx-search mat-icon { font-size: 20px; width: 20px; height: 20px; }
+
+.cbx-list { list-style: none; margin: 0; padding: 0; max-height: 360px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #c9ced6 transparent; }
+.cbx-list::-webkit-scrollbar { width: 6px; }
+.cbx-list::-webkit-scrollbar-thumb { background: #c9ced6; border-radius: 3px; }
+
+.cbx-option {
+  display: flex; align-items: center; gap: 10px;
+  min-height: 40px; padding: 0 10px; border-radius: 10px;
+  font-size: 0.92rem; color: #15171c; cursor: pointer;
+}
+.cbx-option.active { background: #f2f7fd; }
+.cbx-option.selected { font-weight: 600; color: #004e87; }
+.cbx-option .hint { font-size: 0.78rem; color: #8a919c; }
+.cbx-option .check { font-size: 18px; width: 18px; height: 18px; color: #0067b1; }
+
+.cbx-empty { padding: 12px; color: #8a919c; font-size: 0.9rem; text-align: center; }

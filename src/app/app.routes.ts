@@ -6,46 +6,50 @@ import { guestGuard } from './Guards/guest.guard';
 import { UserConfigComponent } from './Components/Content/user-config/user-config.component';
 import { roleGuard } from './Guards/role.guard';
 import { WelcomeComponent } from './Components/Content/welcome/welcome.component';
-import { ClaimType } from './Models/UserAggregate/Enums/ClaimType.enum';
-import { ConfigurationsComponent } from './Components/Content/configurations/configurations.component';
 import { userResolver } from './Guards/Resolvers/user.resolver';
+import { ComingSoonComponent } from './Components/Content/coming-soon/coming-soon.component';
+import { ProfileComponent } from './Components/Content/profile/profile.component';
+import { CitiesConfigComponent } from './Components/Content/cities-config/cities-config.component';
 
 
 export const routes: Routes = [
-     { 
-        path: '', 
-        component: LoginComponent, 
-        canActivate: [guestGuard] 
-    },
-    { 
-        path: 'login', 
-        component: LoginComponent, 
-        canActivate: [guestGuard] 
+    {
+        path: 'login',
+        component: LoginComponent,
+        canActivate: [guestGuard]
     },
     {
-        path: 'home',
+        // Área pública: visitante navega sem login. Telas internas têm guard próprio.
+        path: '',
         component: DashboardComponent,
-        canActivate: [authGuard],
         resolve: { userData: userResolver },
-         children: [
-            // Rota padrão quando entra em /home (exibe uma tela de boas-vindas)
-            { path: '', redirectTo: 'welcome', pathMatch: 'full' },
-            { path: 'welcome', component: WelcomeComponent },
-            { 
-                path: 'userConfiguration', 
-                component: UserConfigComponent, 
-                canActivate: [roleGuard], 
-                data: { expectedClaim: ClaimType.User } 
+        children: [
+            { path: '', component: WelcomeComponent, pathMatch: 'full' },
+            { path: 'bancas', component: ComingSoonComponent, data: { title: 'Bancas' } },
+            { path: 'validar-certificado', component: ComingSoonComponent, data: { title: 'Validar certificado' } },
+            {
+                path: 'meus-dados',
+                component: ProfileComponent,
+                canActivate: [authGuard]
             },
-            { 
-                path: 'configuration', 
-                component: ConfigurationsComponent,
+            {
+                path: 'usuarios',
+                component: UserConfigComponent,
                 canActivate: [roleGuard],
-                data: { expectedClaim: ClaimType.Admin}
+                data: { expectedRole: 'adminCas' }
+            },
+            {
+                path: 'cidades',
+                component: CitiesConfigComponent,
+                canActivate: [roleGuard],
+                data: { expectedRole: 'adminGeral' }
             }
         ]
     },
 
+    // Endereços antigos
+    { path: 'home', redirectTo: '' },
+    { path: 'home/userConfiguration', redirectTo: 'usuarios' },
 
     { path: '**', redirectTo: '' }
 ];

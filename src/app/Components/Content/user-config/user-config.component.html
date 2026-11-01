@@ -1,109 +1,71 @@
-<div class="container-fluid ">
-    <label class="title">Configuração de Usuários</label>
-
-    <hr class="row">
-
-    <div class="row justify-content-center align-items-end" style="padding: 20px;">
-        <div class="col-sm-6">
-            <label class="form-label">Usuário</label>
-            <input type="text" class="form-control" name="email" [(ngModel)]="email">
-        </div>
-
-        <div class="col-sm-auto">
-            <button type="button" (click)="searchUsers()" mat-flat-button color="primary">
-                <mat-icon>search</mat-icon>
-                Pesquisar
-            </button>
-        </div>
+<div class="page">
+    <div>
+        <h1 class="page-title">Usuários</h1>
+        <p class="page-sub">Clique em uma pessoa para ver os dados e mudar o acesso.</p>
     </div>
 
-    <!-- TABELA BOOTSTRAP -->
-
-    <div class="table-container shadow-sm">
-        <div class="table-header-title">
-            Usuários
-        </div>
-        <table class="custom-table">
-            <thead>
-                <tr>
-                    <th style="width: 55%;">E-mail</th>
-                    <th style="width: 15%;">Tipo</th>
-                    <th class="text-center" style="width: 15%;">Status</th>
-                    <th class="text-center" style="width: 15%;">Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let user of pagerResponse?.items">
-                    <td>{{ user.email }}</td>
-                    <td>{{ user.claimTypeEnumHandler.description }}</td>
-                    <td class="text-center">
-                        <span class="badge-custom" [ngClass]="user.isActive? 'status-ativo' : 'status-inativo'">
-                            {{ user.isActive ? 'Ativo' : 'Inativo' }}
-                        </span>
-                    </td>
-                    <td class="text-center">
-                        <button class="btn btn-pill-edit">
-                            <mat-icon>edit</mat-icon>
-                        </button>
-
-                        <button class="btn btn-pill-delete">
-                            <mat-icon>delete</mat-icon>
-                        </button>
-                    </td>
-                </tr>
-                <tr *ngIf="pagerResponse?.items?.length == 0" >
-                    <td colspan="4" class="text-center register-not-found">
-                        <i class="fa-solid fa-triangle-exclamation"></i>
-                         Não foram encontrados resultados para a pesquisa
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
-        <!-- PAGINADOR -->
-        <mat-paginator #paginator 
-               *ngIf="pagerResponse?.items?.length > 0" 
-               class="demo-paginator"
-               (page)="handlePageEvent($event)"
-               [length]="pagerResponse?.totalRows || 0"
-               [pageSize]="pagerRequest.pageSize"
-               [pageIndex]="pagerRequest.pageNumber - 1" 
-               [pageSizeOptions]="pageSizeOptions"
-               [showFirstLastButtons]="true"
-               aria-label="Selecionar página">
-</mat-paginator>
-    </div>
-
-    <div class="col-sm-12">
-        <button mat-button>
-            <mat-icon>arrow_back_ios</mat-icon>
-            Voltar
+    <div class="filters">
+        <label class="search">
+            <mat-icon>search</mat-icon>
+            <input placeholder="Buscar por nome ou e-mail" aria-label="Buscar usuário" [(ngModel)]="filter" (keyup.enter)="search()">
+        </label>
+        @if (adminEntities().length > 1 || _domainUser.isAdminGeral()) {
+            <app-combobox class="filter-cas" ariaLabel="CAS" [options]="entityOptions()" [value]="entityFilter()"
+                [searchFrom]="99" (valueChange)="changeEntity($event ?? '')"></app-combobox>
+        }
+        <button type="button" (click)="search()" mat-flat-button color="primary">
+            <mat-icon>search</mat-icon>
+            Pesquisar
         </button>
-
     </div>
 
+    <section class="list modern-shadow">
+        @if (isLoading) {
+            <div class="loading-overlay">
+                <div class="spinner"></div>
+                <span>Carregando dados...</span>
+            </div>
+        }
+
+        @for (user of pagerResponse?.items; track user.userId) {
+            <button type="button" class="user-row" (click)="openUser(user)">
+                <span class="avatar">{{ initials(user) }}</span>
+                <span class="who">
+                    <span class="name">{{ user.name || user.email }}</span>
+                    <span class="email">{{ user.email }}</span>
+                </span>
+                <span class="chips">
+                    @if (isAdminGeral(user)) {
+                        <span class="chip admin">Administrador geral</span>
+                    }
+                    @for (r of user.roles; track r.entityId) {
+                        <span class="chip role">{{ r.role ? roleLabel[r.role] : '' }} · {{ r.entityName }}</span>
+                    }
+                    @if (!isAdminGeral(user) && user.roles.length === 0) {
+                        <span class="chip">Candidato</span>
+                    }
+                    @if (user.cityName) {
+                        <span class="city">{{ user.cityName }}</span>
+                    }
+                    <span class="chip" [class.ok]="user.isActive" [class.off]="!user.isActive">{{ user.isActive ? 'Ativo' : 'Inativo' }}</span>
+                </span>
+                <mat-icon class="go">chevron_right</mat-icon>
+            </button>
+        } @empty {
+            <div class="register-not-found">
+                <mat-icon>warning</mat-icon>
+                Não foram encontrados resultados para a pesquisa
+            </div>
+        }
+
+        @if (pages.length > 1) {
+            <div class="pager">
+                <button class="btn-arrow" [disabled]="pagerRequest.pageNumber === 1" (click)="changePage(pagerRequest.pageNumber - 1)">‹</button>
+                @for (p of pages; track p) {
+                    <button class="btn-page" [class.ativo]="p === pagerRequest.pageNumber" (click)="changePage(p)">{{ p }}</button>
+                }
+                <button class="btn-arrow" [disabled]="pagerRequest.pageNumber === pages.length" (click)="changePage(pagerRequest.pageNumber + 1)">›</button>
+            </div>
+        }
+    </section>
 </div>
-
-
-
-
-
-
-
-
-
-<style>
-.demo-paginator{
-    background-color: #f8f9ff;
-}
-
-::ng-deep .mat-mdc-paginator-container {
-    justify-content: space-between !important;
-    padding: 0 16px !important;
-}
-
-.register-not-found{
-    background-color: white;
-    color: darkgoldenrod;
-}
-</style>

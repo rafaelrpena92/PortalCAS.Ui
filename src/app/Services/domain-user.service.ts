@@ -1,11 +1,17 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { Entity } from '../Models/EntityAggregate/Entities/Entity.model';
-import { ClaimType } from '../Models/UserAggregate/Enums/ClaimType.enum';
+import { City, Entity, EntityRole } from '../Models/EntityAggregate/Entities/Entity.model';
 import { DomainUserApiService } from './Api/domain-user.api.service';
 import { EntityApiService } from './Api/entity.api.service';
-import { DomainUser } from '../Models/UserAggregate/Entities/domain-user.model';
+import { DomainUser, UpdateProfile } from '../Models/UserAggregate/Entities/domain-user.model';
 
+/**
+ * Estado do usuário logado (ou visitante) e do CAS selecionado no topo.
+ *
+ * Regras de acesso ao mapa:
+ * - visitante, candidato e administrador geral: todos os CAS;
+ * - quem tem papel em algum CAS (avaliador / administrador do CAS): só os CAS em que trabalha.
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -14,105 +20,130 @@ export class DomainUserService {
   private _userApiService = inject(DomainUserApiService);
   private _entityApiService = inject(EntityApiService);
 
-  private readonly USER_KEY = 'app_user_domain';
-  private readonly ENTITIES_KEY = 'app_entities_all';
+  private readonly VISITOR_CAS_KEY = 'portalcas_cas_visitante';
 
   domainUser = signal<DomainUser | null>(null);
   allEntities = signal<Entity[]>([]);
+  cities = signal<City[]>([]);
+  selectedEntity = signal<Entity | null>(null);
   isLoaded = signal<boolean>(false);
-  private isLoading = false;
 
-  isAdmin = computed(() => this.domainUser()?.claimType === ClaimType.Admin);
-  isUser = computed(() => this.isAdmin() || this.domainUser()?.claimType === ClaimType.User);
+  private publicLoad: Promise<void> | null = null;
+  private userLoad: Promise<void> | null = null;
 
-  async loadUserData(): Promise<void> {
-    if (this.isLoaded() || this.isLoading) return;
+  isLoggedIn = computed(() => !!this.domainUser());
+  isAdminGeral = computed(() => !!this.domainUser()?.isAdminGeral);
+  residenceEntityId = computed(() => this.domainUser()?.residenceEntity?.entityId ?? null);
+  workEntityIds = computed(() => (this.domainUser()?.roles ?? []).filter(r => r.role).map(r => r.entityId));
 
-    // 1. TENTA CARREGAR DO CACHE (LocalStorage)
-    const cachedUser = localStorage.getItem(this.USER_KEY);
-    const cachedEntities = localStorage.getItem(this.ENTITIES_KEY);
+  /** Papel do usuário no CAS selecionado (administrador geral conta como administrador do CAS). */
+  roleInSelected = computed<EntityRole | null>(() => {
+    const entityId = this.selectedEntity()?.entityId;
+    if (!entityId || !this.domainUser()) return null;
+    if (this.isAdminGeral()) return EntityRole.AdminCas;
+    return this.domainUser()!.roles.find(r => r.entityId === entityId)?.role ?? null;
+  });
 
-    if (cachedUser && cachedEntities) {
-      this.domainUser.set(JSON.parse(cachedUser));
-      this.allEntities.set(JSON.parse(cachedEntities));
-      this.isLoaded.set(true);
-      console.log('Dados carregados do Cache');
-      return; // Interrompe aqui, não precisa chamar a API
-    }
+  isAvaliadorInSelected = computed(() => (this.roleInSelected() ?? 0) >= EntityRole.Avaliador);
+  isAdminCasInSelected = computed(() => this.roleInSelected() === EntityRole.AdminCas);
 
+  /** Candidato logado sem cidade: precisa completar o cadastro para se inscrever. */
+  needsCity = computed(() => this.isLoggedIn() && !this.domainUser()?.city);
 
-    // 2. SE NÃO TIVER CACHE, BUSCA NA API
-    try {
-      this.isLoading = true;
-      const [userRes, entitiesRes] = await Promise.all([
-        firstValueFrom(this._userApiService.GetMe()),
-        firstValueFrom(this._entityApiService.GetAllEntities())
-      ]);
-
-      if (userRes.success && entitiesRes.success) {
-        const user = userRes.data;
-        const entities = entitiesRes.data;
-
-        // Processa a última entidade selecionada
-        this.setLastSelectedEntity(user);
-
-        // Atualiza os Signals
-        this.domainUser.set(user);
-        this.allEntities.set(entities);
-
-        // SALVA NO CACHE PARA O PRÓXIMO F5
-        localStorage.setItem(this.USER_KEY, JSON.stringify(user));
-        localStorage.setItem(this.ENTITIES_KEY, JSON.stringify(entities));
-
-        this.isLoaded.set(true);
-        console.log('Dados carregados da API e salvos no Cache');
+  /** CAS e cidades são públicos: carregados uma vez. */
+  loadPublicData(): Promise<void> {
+    this.publicLoad ??= (async () => {
+      try {
+        const [entitiesRes, citiesRes] = await Promise.all([
+          firstValueFrom(this._entityApiService.GetAllEntities()),
+          firstValueFrom(this._entityApiService.GetAllCities())
+        ]);
+        this.allEntities.set(entitiesRes.data ?? []);
+        this.cities.set(citiesRes.data ?? []);
+        if (!this.selectedEntity())
+          this.selectedEntity.set(this.pickInitialEntity());
+      } catch (err) {
+        console.error('Erro ao carregar CAS e cidades:', err);
+        this.publicLoad = null;
       }
-
-    } catch (err) {
-      console.error("Erro na sincronização:", err);
-      this.domainUser.set(null);
-      this.isLoaded.set(false);
-    } finally {
-      this.isLoading = false;
-    }
+    })();
+    return this.publicLoad;
   }
 
-  //Avisa o backend para persistir como a "última entidade selecionada"
+  /** Busca o usuário na API (sem cache, para refletir mudanças de perfil na hora). */
+  loadUserData(force = false): Promise<void> {
+    if (this.userLoad && !force) return this.userLoad;
+
+    this.userLoad = (async () => {
+      await this.loadPublicData();
+      const res = await firstValueFrom(this._userApiService.GetMe());
+      this.domainUser.set(res.data);
+      this.selectedEntity.set(this.pickInitialEntity());
+      this.isLoaded.set(true);
+    })();
+
+    this.userLoad.catch(() => this.userLoad = null);
+    return this.userLoad;
+  }
+
+  async updateProfile(profile: UpdateProfile) {
+    const res = await firstValueFrom(this._userApiService.UpdateProfile(profile));
+    this.domainUser.set(res.data);
+  }
+
+  canSelectEntity(entityId: string): boolean {
+    if (!this.isLoggedIn() || this.isAdminGeral()) return true;
+    const work = this.workEntityIds();
+    return work.length === 0 || work.includes(entityId);
+  }
+
+  isResidence(entityId: string): boolean {
+    return this.residenceEntityId() === entityId;
+  }
+
+  roleIn(entityId: string): EntityRole | null {
+    return this.domainUser()?.roles.find(r => r.entityId === entityId)?.role ?? null;
+  }
+
   async setSelectedEntity(entity: Entity) {
-    const currentUser = this.domainUser();
-    if (!currentUser) return;
+    if (!this.canSelectEntity(entity.entityId)) return;
 
-    // Atualiza o objeto do usuário com a nova entidade selecionada
-    const updatedUser = { ...currentUser, selectedEntity: entity };
-    this.domainUser.set(updatedUser);
+    this.selectedEntity.set(entity);
+    localStorage.setItem(this.VISITOR_CAS_KEY, entity.entityId);
 
-    // ATUALIZA O CACHE (IMPORTANTE: para manter o F5 consistente)
-    localStorage.setItem(this.USER_KEY, JSON.stringify(updatedUser));
-
-    try {
-      await firstValueFrom(this._entityApiService.SetLastSelectedEntity(currentUser.id, entity.id));
-    } catch (err) {
-      console.error("Erro ao persistir no backend:", err);
+    if (this.isLoggedIn()) {
+      try {
+        await firstValueFrom(this._userApiService.SetLastViewedEntity(entity.entityId));
+      } catch (err) {
+        console.error('Erro ao salvar o CAS escolhido:', err);
+      }
     }
   }
 
   clear() {
     this.domainUser.set(null);
-    this.allEntities.set([]);
     this.isLoaded.set(false);
-    this.isLoading = false;
-    // LIMPA O CACHE NO LOGOUT
-    localStorage.removeItem(this.USER_KEY);
-    localStorage.removeItem(this.ENTITIES_KEY);
+    this.userLoad = null;
+    this.selectedEntity.set(this.pickInitialEntity());
   }
 
-  //obtem a ultima entidade selecionada do banco
-  private setLastSelectedEntity(user: DomainUser) {
-    const entities = user.entities || [];
-    if (user.lastSelectedEntity?.id) {
-      const lastSelectedEntity = entities.find(e => e.id === user.lastSelectedEntity?.id);
-      if (lastSelectedEntity)
-        user.selectedEntity = lastSelectedEntity;
-    }
+  /** Último CAS visto > CAS onde trabalha > CAS da cidade > escolha do visitante > CAS Guarapuava. */
+  private pickInitialEntity(): Entity | null {
+    const entities = this.allEntities();
+    if (entities.length === 0) return null;
+
+    const byId = (id?: string | null) => id ? entities.find(e => e.entityId === id) : undefined;
+    const user = this.domainUser();
+
+    const candidates = [
+      byId(user?.lastViewedEntity?.entityId),
+      byId(this.workEntityIds()[0]),
+      byId(user?.residenceEntity?.entityId),
+      byId(localStorage.getItem(this.VISITOR_CAS_KEY)),
+      entities.find(e => e.name === 'CAS Guarapuava'),
+      entities[0]
+    ];
+
+    return candidates.find(e => !!e && this.canSelectEntity(e.entityId)) ?? null;
   }
 }

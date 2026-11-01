@@ -1,0 +1,49 @@
+<div class="page">
+  <div>
+    <h1 class="page-title">Cidades e CAS</h1>
+    <p class="page-sub">Cada município do Paraná pertence a um CAS. É isso que define onde o candidato pode se inscrever.</p>
+  </div>
+
+  @if (withoutCas() > 0) {
+    <div class="notice">
+      <mat-icon>info</mat-icon>
+      <span><b>{{ withoutCas() }} cidades</b> ainda não têm CAS. Moradores delas não conseguem se inscrever em bancas.</span>
+      @if (casFilter() !== 'sem') {
+        <button type="button" class="link" (click)="casFilter.set('sem')">Ver cidades sem CAS</button>
+      }
+    </div>
+  }
+
+  <div class="filters">
+    <label class="search">
+      <mat-icon>search</mat-icon>
+      <input placeholder="Buscar cidade" aria-label="Buscar cidade" [ngModel]="search()" (ngModelChange)="search.set($event)">
+    </label>
+    <app-combobox class="filter-cas" ariaLabel="Filtrar por CAS" [options]="filterOptions()" [value]="casFilter()"
+      [searchFrom]="99" (valueChange)="casFilter.set($event ?? 'todas')"></app-combobox>
+  </div>
+
+  <div class="count">{{ list().length }} {{ list().length === 1 ? 'cidade' : 'cidades' }}</div>
+
+  <ul class="cities">
+    @for (city of list(); track city.id) {
+      <li [class.missing]="!city.entityId" [class.saving]="savingId() === city.id">
+        <span class="bar" [style.background]="city.entityId ? casColor(city.entityName) : '#e3e6ea'"></span>
+        <span class="city">
+          <span class="name">{{ city.name }}</span>
+          @if (!city.entityId) {
+            <span class="tag">Sem CAS</span>
+          }
+        </span>
+        <app-combobox class="city-cas" size="sm" [ariaLabel]="'CAS de ' + city.name" [options]="casOptions()"
+          [value]="city.entityId ?? ''" [searchFrom]="99" [disabled]="savingId() === city.id"
+          (valueChange)="change(city, $event)"></app-combobox>
+      </li>
+    } @empty {
+      <li class="empty">
+        <mat-icon>search_off</mat-icon>
+        Nenhuma cidade encontrada.
+      </li>
+    }
+  </ul>
+</div>

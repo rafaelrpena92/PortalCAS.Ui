@@ -1,0 +1,38 @@
+<button #trigger type="button" class="cbx-trigger" [class.sm]="size === 'sm'" [class.open]="open()" [class.empty]="!selected()?.value"
+  cdkOverlayOrigin #origin="cdkOverlayOrigin" [disabled]="disabled"
+  role="combobox" aria-haspopup="listbox" [attr.aria-expanded]="open()" [attr.aria-controls]="id + '-list'"
+  [attr.aria-label]="ariaLabel || null" (click)="toggle()" (keydown)="onKey($event)">
+  @if (selected(); as s) {
+    @if (s.color) { <span class="dot" [style.background]="s.color"></span> }
+    <span class="label">{{ s.label }}</span>
+  } @else {
+    <span class="label placeholder">{{ placeholder }}</span>
+  }
+  <mat-icon class="chevron">expand_more</mat-icon>
+</button>
+
+<ng-template cdkConnectedOverlay [cdkConnectedOverlayOrigin]="origin" [cdkConnectedOverlayOpen]="open()"
+  [cdkConnectedOverlayPositions]="positions" [cdkConnectedOverlayWidth]="width()"
+  (overlayOutsideClick)="close()" (detach)="close()">
+  <div class="cbx-panel" (keydown)="onKey($event)">
+    @if (showSearch()) {
+      <label class="cbx-search">
+        <mat-icon>search</mat-icon>
+        <input #searchInput placeholder="Buscar" aria-label="Buscar opção" [value]="term()" (input)="onSearch($any($event.target).value)">
+      </label>
+    }
+    <ul class="cbx-list" role="listbox" [id]="id + '-list'" tabindex="-1">
+      @for (option of filtered(); track option.value; let i = $index) {
+        <li role="option" class="cbx-option" [class.active]="i === active()" [class.selected]="option.value === (value ?? '')"
+          [attr.aria-selected]="option.value === (value ?? '')" (mouseenter)="active.set(i)" (click)="choose(option)">
+          @if (option.color) { <span class="dot" [style.background]="option.color"></span> }
+          <span class="label">{{ option.label }}</span>
+          @if (option.hint) { <span class="hint">{{ option.hint }}</span> }
+          @if (option.value === (value ?? '')) { <mat-icon class="check">check</mat-icon> }
+        </li>
+      } @empty {
+        <li class="cbx-empty">Nada encontrado</li>
+      }
+    </ul>
+  </div>
+</ng-template>

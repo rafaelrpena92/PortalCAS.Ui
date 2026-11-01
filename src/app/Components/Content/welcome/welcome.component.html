@@ -1,1 +1,45 @@
-<p>welcome works!</p>
+<div class="page">
+  @if (_userService.needsCity()) {
+    <a routerLink="/meus-dados" class="city-banner">
+      <mat-icon>location_on</mat-icon>
+      <span>Informe a cidade onde você mora para saber o seu CAS e poder se inscrever nas bancas.</span>
+      <mat-icon>chevron_right</mat-icon>
+    </a>
+  }
+
+  <section class="hero">
+    <span class="eyebrow">Você está vendo</span>
+    <h1>{{ _userService.selectedEntity()?.name ?? 'Portal CAS' }}</h1>
+    <p>Bancas de proficiência em Libras, notícias e certificados do seu CAS. Para trocar de CAS, clique no nome dele na barra azul.</p>
+    @if (!_userService.isLoggedIn()) {
+      <a routerLink="/login" class="btn-primary-pill">
+        <mat-icon>login</mat-icon> Entrar ou criar conta
+      </a>
+    }
+  </section>
+
+  <section class="card">
+    <h2>Como funciona</h2>
+    <ol class="steps">
+      <li><span class="num">1</span><strong>Crie sua conta</strong><span>Informe sua cidade para saber o seu CAS.</span></li>
+      <li><span class="num yellow">2</span><strong>Envie seus documentos</strong><span>Ficam no seu perfil para as próximas inscrições.</span></li>
+      <li><span class="num red">3</span><strong>Inscreva-se e acompanhe</strong><span>Notas e certificado com data de validade.</span></li>
+    </ol>
+  </section>
+
+  <section class="card locate">
+    <h2><mat-icon>location_on</mat-icon> Localize o seu CAS</h2>
+    <app-city-picker inputId="localizar" (cityChange)="foundCity.set($event)"></app-city-picker>
+    @if (foundCity(); as city) {
+      @if (city.entityName) {
+        <div class="result">
+          <span><b>{{ city.name }}</b> é atendida pelo <b>{{ city.entityName }}</b>.</span>
+          <button type="button" class="link" (click)="goToCas(city)">Ver este CAS</button>
+        </div>
+      } @else {
+        <div class="result muted">Esta cidade ainda não foi ligada a um CAS.</div>
+      }
+    }
+    <small>Cada cidade pertence a um CAS. Você se inscreve nas bancas do CAS da sua região.</small>
+  </section>
+</div>

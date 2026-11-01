@@ -5,8 +5,6 @@
   height: 100vh;
 }
 
-
-
 .main-toolbar {
   background-color: #d7e3ff;
   position: relative;
@@ -86,7 +84,7 @@
 
 /* CONTENT */
 .content-area {
-  background-color: #f0f2f5;
+  background-color: #f5f0f4;
   height: 100%;
   overflow-y: auto;
 }
@@ -101,9 +99,9 @@
 .centered-sheet {
   background-color: #ffffff;
   width: 100%;
-  max-width: 1168px;
+  max-width: 1180px;
   min-height: calc(100vh - 150px);
-  padding: 32px;
+  padding: 36px 32px 32px 32px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   box-sizing: border-box;
 }
@@ -128,8 +126,7 @@
   right: 0;
   margin-left: auto;
   margin-right: auto;
-  width: 960px; 
-  max-width: 95vw;
+  max-width: 1180px; 
   max-height: 420px;
   background-color: #ffffff;
   z-index: 2001;
@@ -149,7 +146,6 @@
   display: flex;
   justify-content: center; 
   align-items: center;
- 
   border-bottom: 1px solid #eee;
 }
 
@@ -188,7 +184,7 @@
 .nav-pill-header {
   margin: 4px 0px !important;
   border-radius: 28px !important;
-  padding: 0 16px !important;
+  padding: 0 28px 0 16px !important;
   font-family: inherit;
 }
 
@@ -212,6 +208,7 @@
   border-right: 1px solid #e0e0e0;
   background-color: #fdfdfd;
   box-shadow: 4px 0 10px rgba(0, 0, 0, 0.05);
+  border-radius: 0px;
 }
 
 .list-label {
@@ -244,3 +241,47 @@
   height: 48px !important; 
 }
 
+
+/* CAS NO TOPO, ENTRAR, AVISO DE CIDADE */
+.cas-btn {
+  font-weight: 500;
+}
+
+.btn-entrar {
+  border-radius: 20px !important;
+  background-color: #005cbb !important;
+  color: #fff !important;
+}
+
+
+/* CELULAR */
+@media (max-width: 900px) {
+  .centered-sheet {
+    padding: 24px 14px 32px;
+    box-shadow: none;
+  }
+
+  .center-nav {
+    position: static;
+    transform: none;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+  }
+
+  .spacer { display: none; }
+
+  .cas-btn {
+    padding: 0 8px !important;
+    font-size: 0.95rem;
+  }
+
+  .btn-entrar {
+    padding: 0 12px !important;
+  }
+
+  .top-map-drawer {
+    max-height: 92vh;
+    border-radius: 0 0 22px 22px;
+  }
+}

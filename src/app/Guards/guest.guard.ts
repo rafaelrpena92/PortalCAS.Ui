@@ -10,7 +10,7 @@ export const guestGuard: CanActivateFn = async (route, state) => {
     await _authService.authReadyPromise; // Aguarda o Firebase inicializar
 
     if (_authService.userFirebase()) {
-        router.navigate(['/home']);
+        router.navigate(['/']);
         return false;
     }
 

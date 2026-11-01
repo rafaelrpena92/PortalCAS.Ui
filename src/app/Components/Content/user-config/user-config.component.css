@@ -1,0 +1,50 @@
+.page { width: 100%; display: flex; flex-direction: column; gap: 18px; }
+.page-title { margin: 0; font-size: 1.8rem; font-weight: 700; }
+.page-sub { margin: 4px 0 0; color: #555b66; }
+
+.filters { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.search {
+  flex: 1 1 260px; display: flex; align-items: center; gap: 8px; margin: 0;
+  height: 44px; padding: 0 12px; border: 1px solid #c9ced6; border-radius: 12px; background: #fff; color: #555b66;
+}
+.search input { flex: 1; min-width: 0; border: none; outline: none; }
+.filter-cas { flex: 0 1 260px; }
+
+.list {
+  position: relative; background: #fff; border: 1px solid #d4d8de; border-radius: 24px;
+  padding: 8px; display: flex; flex-direction: column; gap: 6px; min-height: 120px;
+}
+
+.user-row {
+  display: flex; gap: 14px; align-items: center; width: 100%;
+  padding: 12px 14px; border: 1px solid #e3e6ea; border-radius: 16px; background: #fff;
+  text-align: left; cursor: pointer;
+}
+.user-row:hover { background: #f2f7fd; border-color: #8fb8dc; }
+
+.avatar {
+  flex: 0 0 42px; height: 42px; border-radius: 50%; background: #e8f1fa; color: #004e87;
+  display: flex; align-items: center; justify-content: center; font-weight: 700;
+}
+.who { flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; }
+.who .name { font-weight: 600; color: #15171c; }
+.who .email { font-size: 0.85rem; color: #555b66; overflow: hidden; text-overflow: ellipsis; }
+
+.chips { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; justify-content: flex-end; flex: 1 1 260px; }
+.chip { padding: 3px 9px; border-radius: 8px; background: #e0f2fe; color: #075985; font-size: 0.75rem; font-weight: 600; white-space: nowrap; }
+.chip.role { background: #ede9fe; color: #5b21b6; }
+.chip.admin { background: #fff6bf; color: #4a3d00; }
+.chip.ok { background: #e3f4ea; color: #0f5b30; }
+.chip.off { background: #fde8e8; color: #9b0f13; }
+.city { font-size: 0.8rem; color: #555b66; }
+.go { color: #8a919c; }
+
+.pager { display: flex; justify-content: center; align-items: center; gap: 8px; margin: 10px 0 4px; }
+
+@media (max-width: 600px) {
+  .page-title { font-size: 1.5rem; }
+  .filter-cas, .filters button { flex: 1 1 100%; }
+  .user-row { flex-wrap: wrap; }
+  .chips { flex: 1 1 100%; justify-content: flex-start; padding-left: 56px; }
+  .go { display: none; }
+}

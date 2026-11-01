@@ -12,6 +12,7 @@ import {
 } from 'firebase/auth';
 import { environment } from '../../environments/environment';
 import { DomainUserService } from './domain-user.service';
+import { NotificationService } from './notification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +22,7 @@ export class AuthService {
   private auth = getAuth(this.app);
   private googleProvider = new GoogleAuthProvider();
   private userService = inject(DomainUserService);
+  private notification = inject(NotificationService);
 
   userFirebase = signal<FirebaseUser | null>(null);
   tokenSignal = signal<string | null>(null);
@@ -36,26 +38,26 @@ export class AuthService {
     onIdTokenChanged(this.auth, async (user) => {
       try {
         if (user) {
-          // 1. Buscamos o token de forma assíncrona
+          // 1. Token primeiro: as chamadas à API dependem dele
           const token = await user.getIdToken();
+          const isNewLogin = this.userFirebase()?.uid !== user.uid;
 
-          // 2. Atualizamos os sinais PRIMEIRO
           this.tokenSignal.set(token);
           this.userFirebase.set(user);
 
-          console.log("Firebase Auth: Usuário detectado e token recuperado.");
+          // 2. Perfil e papéis vêm sempre da API (nada de cache antigo)
+          if (isNewLogin)
+            await this.loadDomainUser();
         } else {
           // Caso de logout ou sessão expirada
           this.clearSession();
-          console.log("Firebase Auth: Nenhum usuário detectado.");
         }
       } catch (error) {
         console.error("Erro ao processar mudança de token:", error);
         this.clearSession();
       } finally {
-        // 3. SÓ AGORA resolvemos a Promise. 
-        // Isso garante que qualquer Guard que esteja dando 'await' 
-        // só continue quando o token já estiver disponível no signal.
+        // 3. Só agora os Guards continuam: token e perfil já estão disponíveis
+        this.isAuthInitialized.set(true);
         this.resolveReady(true);
       }
     });
@@ -101,6 +103,18 @@ export class AuthService {
       this.clearSession();
     } catch (error) {
       console.error("Erro ao fazer logout", error);
+      throw error;
+    }
+  }
+
+  private async loadDomainUser() {
+    try {
+      await this.userService.loadUserData(true);
+    } catch (error: any) {
+      // Conta desativada (403) ou API fora do ar: não deixa a sessão pela metade
+      const message = error?.error?.message ?? 'Não foi possível carregar seus dados. Tente novamente.';
+      this.notification.MessagePopup('warning', 'Atenção', message);
+      await signOut(this.auth);
       throw error;
     }
   }

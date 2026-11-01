@@ -1,0 +1,72 @@
+<div class="page">
+  <div>
+    <h1 class="page-title">Meus dados</h1>
+    <p class="page-sub">A cidade onde você mora define o CAS responsável por você.</p>
+  </div>
+
+  <section class="card">
+    <h2>Dados pessoais</h2>
+    <div class="grid">
+      <label class="field full">
+        <span>Nome completo</span>
+        <input class="form-control" [ngModel]="name()" (ngModelChange)="name.set($event)" maxlength="200">
+      </label>
+      <div class="field full">
+        <span>E-mail</span>
+        <div class="readonly">{{ _userService.domainUser()?.email }}</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Endereço</h2>
+    <div class="field">
+      <label for="cidade">Cidade onde mora</label>
+      <app-city-picker inputId="cidade" [cityId]="city()?.id" (cityChange)="onCity($event)"></app-city-picker>
+    </div>
+
+    @if (city(); as c) {
+      <div class="cas-line">
+        <span class="chip">{{ c.entityName ?? 'Sem CAS definido' }}</span>
+        @if (c.entityName) {
+          <span>{{ changesCas() ? 'atende ' + c.name : 'é o seu CAS' }}</span>
+        } @else {
+          <span>Esta cidade ainda não foi ligada a um CAS. Fale com o CAS mais próximo.</span>
+        }
+      </div>
+    }
+
+    @if (changesCas()) {
+      <div class="warning">
+        <strong>Você vai mudar de CAS</strong>
+        <span>Ao salvar, você passa para o <b>{{ city()?.entityName ?? 'novo CAS' }}</b>. Suas inscrições em bancas do
+          {{ _userService.domainUser()?.residenceEntity?.name }} serão canceladas. Documentos e certificados continuam com você.</span>
+        <label class="check">
+          <input type="checkbox" [checked]="understood()" (change)="understood.set(!understood())">
+          Entendi que as inscrições serão canceladas
+        </label>
+      </div>
+    }
+  </section>
+
+  @if (_userService.domainUser()?.roles?.length || _userService.isAdminGeral()) {
+    <section class="card">
+      <h2>Meus acessos</h2>
+      <ul class="roles">
+        @if (_userService.isAdminGeral()) {
+          <li><span class="chip admin">Administrador geral</span> Todos os CAS</li>
+        }
+        @for (r of _userService.domainUser()?.roles; track r.entityId) {
+          <li><span class="chip">{{ r.role ? roleLabel[r.role] : '' }}</span> {{ r.entityName }}</li>
+        }
+      </ul>
+    </section>
+  }
+
+  <div class="actions">
+    <button mat-flat-button color="primary" [disabled]="!canSave()" (click)="save()">
+      <mat-icon>save</mat-icon>
+      {{ isSaving() ? 'Salvando...' : 'Salvar alterações' }}
+    </button>
+  </div>
+</div>

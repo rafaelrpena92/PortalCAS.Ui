@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '../../Models/Contracts/api-response.model';
-import { Entity } from '../../Models/EntityAggregate/Entities/Entity.model';
+import { City, Entity } from '../../Models/EntityAggregate/Entities/Entity.model';
 import { BaseApiService } from './base.api.service';
 
 @Injectable({
@@ -9,16 +9,19 @@ import { BaseApiService } from './base.api.service';
 })
 export class EntityApiService extends BaseApiService {
 
-  SetLastSelectedEntity(userId: string, entityId: string): Observable<ApiResponse<void>> {
-    const params = { userId, entityId };
-    return this.http.post<ApiResponse<void>>(
-      `${this.apiUrl}/entity/SetLastSelectedEntity`,
-      {},
-      { params: params }
-    );
+  GetAllEntities(): Observable<ApiResponse<Entity[]>> {
+    return this.http.get<ApiResponse<Entity[]>>(`${this.apiUrl}/Entity/GetAllEntities`);
   }
 
-  GetAllEntities(): Observable<ApiResponse<Entity[]>> {
-    return this.http.get<ApiResponse<Entity[]>>(`${this.apiUrl}/entity/GetAllEntities`);
+  GetAllCities(): Observable<ApiResponse<City[]>> {
+    return this.http.get<ApiResponse<City[]>>(`${this.apiUrl}/Entity/GetAllCities`);
+  }
+
+  SetCityEntity(cityId: number, entityId: string | null): Observable<ApiResponse<void>> {
+    const params: any = { cityId };
+    if (entityId)
+      params.entityId = entityId;
+
+    return this.http.post<ApiResponse<void>>(`${this.apiUrl}/Entity/SetCityEntity`, {}, { params });
   }
 }

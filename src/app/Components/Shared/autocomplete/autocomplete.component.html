@@ -1,0 +1,30 @@
+<div #field class="acp-field" [class.open]="open()" cdkOverlayOrigin #origin="cdkOverlayOrigin">
+  <mat-icon class="lead">search</mat-icon>
+  <input #input [id]="inputId || id" type="text" autocomplete="off" [placeholder]="placeholder"
+    role="combobox" aria-autocomplete="list" [attr.aria-expanded]="open()" [attr.aria-controls]="id + '-list'"
+    [attr.aria-label]="ariaLabel || null" [value]="text()"
+    (input)="onInput($any($event.target).value)" (focus)="openPanel()" (keydown)="onKey($event)">
+  @if (text()) {
+    <button type="button" class="clear" aria-label="Limpar" (click)="clear()"><mat-icon>close</mat-icon></button>
+  }
+</div>
+
+<ng-template cdkConnectedOverlay [cdkConnectedOverlayOrigin]="origin" [cdkConnectedOverlayOpen]="open()"
+  [cdkConnectedOverlayPositions]="positions" [cdkConnectedOverlayWidth]="width()"
+  (overlayOutsideClick)="close()" (detach)="close()">
+  <div class="cbx-panel">
+    <ul class="cbx-list" role="listbox" [id]="id + '-list'">
+      @for (option of results(); track option.value; let i = $index) {
+        <li role="option" class="cbx-option" [class.active]="i === active()" [class.selected]="option.value === value"
+          [attr.aria-selected]="option.value === value" (mouseenter)="active.set(i)" (mousedown)="$event.preventDefault()" (click)="choose(option)">
+          @if (option.color) { <span class="dot" [style.background]="option.color"></span> }
+          <span class="label">{{ option.label }}</span>
+          @if (option.hint) { <span class="chip" [class.muted]="!option.color || option.color === '#d4d8de'">{{ option.hint }}</span> }
+          @if (option.value === value) { <mat-icon class="check">check</mat-icon> }
+        </li>
+      } @empty {
+        <li class="cbx-empty">{{ emptyText }}</li>
+      }
+    </ul>
+  </div>
+</ng-template>

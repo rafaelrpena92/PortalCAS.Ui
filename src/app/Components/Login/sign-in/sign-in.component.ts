@@ -107,7 +107,7 @@ export class SignInComponent {
   }
 
   private goToHome() {
-    this.router.navigate(['/home']);
+    this.router.navigate(['/']);
   }
 
   //#endregion

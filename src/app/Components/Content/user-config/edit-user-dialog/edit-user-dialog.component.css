@@ -1,0 +1,65 @@
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 16px 4px 24px;
+}
+
+.dialog-header .who { display: flex; gap: 14px; align-items: center; min-width: 0; }
+.dialog-header .title { margin: 0 !important; padding: 0 !important; font-size: 1.2rem; font-weight: 700; }
+.dialog-header .sub { font-size: 0.85rem; color: #555b66; }
+.dialog-header .avatar {
+  flex: 0 0 52px; height: 52px; border-radius: 50%; background: #0067b1; color: #fff;
+  display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem;
+}
+
+/* Botão de fechar (X) */
+.btn-close-dialog {
+  color: #64748b !important;
+  width: 36px !important;
+  height: 36px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 50% !important;
+}
+
+.btn-close-dialog:hover { background-color: #f1f5f9 !important; color: #0f172a !important; }
+
+.block { display: flex; flex-direction: column; gap: 8px; margin: 12px 0 16px; }
+.block-title { font-weight: 600; font-size: 0.9rem; color: #15171c; }
+.readonly { padding: 10px 12px; border-radius: 12px; background: #f6f7f9; color: #3d434d; }
+
+.roles { list-style: none; margin: 0; padding: 8px; border-radius: 16px; background: #f6f7f9; display: flex; flex-direction: column; gap: 6px; }
+.roles li { display: flex; gap: 10px; align-items: center; justify-content: space-between; padding: 6px 6px 6px 12px; border-radius: 12px; background: #fff; border: 1px solid #e3e6ea; }
+.roles .cas { font-weight: 500; display: flex; align-items: center; gap: 8px; min-width: 0; }
+.roles .dot { flex: 0 0 10px; height: 10px; border-radius: 50%; }
+.roles .role-select { flex: 0 0 210px; max-width: 58%; }
+.hint { color: #555b66; }
+
+.toggle-row {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  padding: 12px 14px; border-radius: 14px; background: #f6f7f9; margin-bottom: 10px;
+}
+.toggle-row span { display: flex; flex-direction: column; }
+.toggle-row small { color: #555b66; }
+
+.actions { display: flex; justify-content: flex-end; gap: 8px; padding: 8px 24px 20px !important; }
+
+/* Celular: popup vira tela cheia */
+.dialog-fullscreen .mat-mdc-dialog-surface { border-radius: 0 !important; }
+.dialog-fullscreen .mat-mdc-dialog-content { max-height: none; }
+.dialog-fullscreen .actions button { flex: 1; }
+
+/* O styles.scss global deixa o mat-dialog-content com overflow visível;
+   aqui só o conteúdo rola, com cabeçalho e botões fixos */
+.mat-mdc-dialog-content.user-dialog-content {
+  overflow-y: auto !important;
+  max-height: 62vh;
+  padding: 4px 24px 8px !important;
+  position: relative;
+}
+
+.dialog-fullscreen .mat-mdc-dialog-content.user-dialog-content { max-height: none; flex: 1; }
+.dialog-fullscreen .mat-mdc-dialog-surface { display: flex; flex-direction: column; }

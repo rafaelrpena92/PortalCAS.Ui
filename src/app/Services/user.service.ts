@@ -2,8 +2,8 @@ import { inject, Injectable } from '@angular/core';
 import { PagerRequest } from '../Models/Contracts/pagerRequest.model';
 import { UserApiService } from './Api/user.api.service';
 import { PagerResult } from '../Models/Contracts/pagerResult.model';
-import { User } from '../Models/UserAggregate/Entities/user.model';
-import { Observable } from 'rxjs';
+import { SaveUser, User } from '../Models/UserAggregate/Entities/user.model';
+import { firstValueFrom, Observable } from 'rxjs';
 
 
 @Injectable({
@@ -13,16 +13,13 @@ export class UserService {
 
   private _userApiService = inject(UserApiService);
 
-  //  result: PagerResult<User> = {
-  //   items: [],
-  //   totalRows: 0,
-  //   pageNumber: 1
-  // };
-
-
   constructor() { }
 
-  searchUsers(request: PagerRequest, email: string): Observable<any> {
-    return this._userApiService.SearchUsers(request, email);
+  searchUsers(request: PagerRequest, filter: string, entityId?: string | null): Observable<PagerResult<User>> {
+    return this._userApiService.SearchUsers(request, filter, entityId);
+  }
+
+  async SaveUser(user: SaveUser) {
+    await firstValueFrom(this._userApiService.SaveUser(user));
   }
 }

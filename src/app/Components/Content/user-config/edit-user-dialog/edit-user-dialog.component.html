@@ -1,0 +1,76 @@
+<div class="dialog-header">
+    <div class="who">
+        <span class="avatar">{{ initials() }}</span>
+        <div>
+            <h2 mat-dialog-title class="title m-0">{{ user.name || user.email }}</h2>
+            <span class="sub">{{ user.email }}</span>
+        </div>
+    </div>
+    <button mat-icon-button mat-dialog-close class="btn-close-dialog" title="Fechar">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+
+<mat-dialog-content class="user-dialog-content">
+    @if (isLoading()) {
+    <div class="loading-overlay">
+        <div class="spinner"></div>
+        <span>Salvando usuário...</span>
+    </div>
+    }
+
+    <div class="block">
+        <span class="block-title">Cidade e CAS de residência</span>
+        <div class="readonly">
+            {{ user.cityName ?? 'Cidade não informada' }}
+            @if (user.residenceEntityName) { · {{ user.residenceEntityName }} }
+        </div>
+    </div>
+
+    <div class="block">
+        <span class="block-title">Acesso por CAS</span>
+        <ul class="roles">
+            @for (row of rows(); track row.entity.entityId) {
+            <li>
+                <span class="cas"><span class="dot" [style.background]="casColor(row.entity.name)"></span>{{ row.entity.name }}</span>
+                <app-combobox class="role-select" size="sm" [ariaLabel]="'Papel no ' + row.entity.name" [disabled]="row.locked"
+                    [options]="roleOptions(row)" [value]="row.role ? '' + row.role : ''" [searchFrom]="99"
+                    (valueChange)="setRole(row, $event ?? '')"></app-combobox>
+            </li>
+            }
+        </ul>
+        <small class="hint">Quem não tem papel em nenhum CAS é candidato.</small>
+    </div>
+
+    @if (canEditAdminGeral()) {
+    <div class="toggle-row">
+        <span>
+            <strong>Administrador geral</strong>
+            <small>Acesso a todos os CAS.</small>
+        </span>
+        <mat-slide-toggle [checked]="isAdminGeral()" (change)="isAdminGeral.set($event.checked)" [disabled]="isSelf()"
+            aria-label="Administrador geral"></mat-slide-toggle>
+    </div>
+    }
+
+    <div class="toggle-row">
+        <span>
+            <strong>Conta ativa</strong>
+            <small>Conta inativa não consegue entrar.</small>
+        </span>
+        <mat-slide-toggle [checked]="isActive()" (change)="isActive.set($event.checked)" [disabled]="isSelf()"
+            aria-label="Conta ativa"></mat-slide-toggle>
+    </div>
+
+    @if (isSelf()) {
+    <small class="hint">Você não pode desativar nem tirar o administrador geral da sua própria conta.</small>
+    }
+</mat-dialog-content>
+
+<mat-dialog-actions class="actions">
+    <button mat-stroked-button mat-dialog-close>Cancelar</button>
+    <button mat-flat-button color="primary" [disabled]="isLoading()" (click)="Save()">
+        <mat-icon>save</mat-icon>
+        Salvar
+    </button>
+</mat-dialog-actions>

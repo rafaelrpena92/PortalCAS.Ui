@@ -1,12 +1,20 @@
-import { Entity } from "../../EntityAggregate/Entities/Entity.model";
+import { City, Entity, EntityRoleItem } from "../../EntityAggregate/Entities/Entity.model";
 
 export interface DomainUser {
     id: string;
     firebaseUid: string;
     email: string;
+    name?: string | null;
     claimType: number;
+    isAdminGeral: boolean;
     createdAt: Date;
-    entities : Entity[];
-    lastSelectedEntity? : Entity;
-    selectedEntity?: Entity;
+    city?: City | null;
+    residenceEntity?: Entity | null;
+    roles: EntityRoleItem[];
+    lastViewedEntity?: Entity | null;
+}
+
+export interface UpdateProfile {
+    name?: string | null;
+    cityId?: number | null;
 }
