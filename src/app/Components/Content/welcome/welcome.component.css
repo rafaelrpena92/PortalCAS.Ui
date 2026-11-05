@@ -1,20 +1,5 @@
 .page { width: 100%; display: flex; flex-direction: column; gap: 20px; }
 
-.hero {
-  padding: 32px; border-radius: 28px; color: #fff;
-  background: linear-gradient(135deg, #004e87, #0067b1);
-  display: flex; flex-direction: column; gap: 10px; align-items: flex-start;
-}
-.hero .eyebrow { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.85; }
-.hero h1 { margin: 0; font-size: 2.2rem; font-weight: 700; }
-.hero p { margin: 0; max-width: 620px; opacity: 0.95; }
-
-.btn-primary-pill {
-  margin-top: 6px; display: inline-flex; align-items: center; gap: 8px;
-  height: 44px; padding: 0 20px; border-radius: 22px;
-  background: #ffe94d; color: #15171c; text-decoration: none; font-weight: 600;
-}
-
 .card {
   background: #fff; border: 1px solid #d4d8de; border-radius: 28px; padding: 28px;
   display: flex; flex-direction: column; gap: 16px;
@@ -38,8 +23,6 @@
 .link { border: none; background: none; color: #004e87; font-weight: 600; text-decoration: underline; padding: 0; }
 
 @media (max-width: 600px) {
-  .hero { padding: 22px 18px; border-radius: 20px; }
-  .hero h1 { font-size: 1.6rem; }
   .card { padding: 16px; border-radius: 20px; }
 }
 
@@ -49,3 +32,68 @@
   background: #fff6bf; color: #4a3d00; text-decoration: none;
 }
 .city-banner span { flex: 1; }
+
+.card-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.bancas { display: flex; flex-direction: column; gap: 10px; }
+.empty { padding: 20px; border: 1px dashed #c9ced6; border-radius: 16px; color: #555b66; text-align: center; }
+
+
+/* Nome do CAS com dica */
+.cas-head { display: flex; align-items: center; gap: 6px; }
+.cas-head h1 { margin: 0; font-size: 1.6rem; font-weight: 700; }
+.info-btn { width: 32px; height: 32px; border: 0; border-radius: 50%; background: transparent; color: #8a909a; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+.info-btn mat-icon { font-size: 20px; width: 20px; height: 20px; }
+.info-btn:hover, .info-btn.on { background: #e8f1fa; color: #0067b1; }
+.info-btn:focus-visible { outline: 3px solid rgba(0, 103, 177, 0.3); }
+.tip { display: flex; gap: 8px; align-items: flex-start; margin-top: -8px; padding: 12px 14px; border-radius: 14px; background: #e8f1fa; color: #004e87; font-size: 0.92rem; }
+.tip mat-icon { flex: 0 0 auto; font-size: 18px; width: 18px; height: 18px; }
+
+/* Carrossel de notícias */
+.news-hero { display: flex; flex-direction: column; gap: 12px; }
+.slide {
+  position: relative; overflow: hidden; display: flex; align-items: center; gap: 28px;
+  min-height: 300px; padding: 36px 40px; border-radius: 28px;
+  background: linear-gradient(135deg, #004e87, #0067b1); color: #fff;
+}
+.slide.yellow { background: #ffe94d; color: #15171c; }
+.slide-text { position: relative; z-index: 1; flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+.slide-text h2 { margin: 0; font-size: 2rem; font-weight: 700; line-height: 1.15; }
+.slide-text p { margin: 0; font-size: 1rem; opacity: 0.92; }
+.news-cat { padding: 3px 10px; border-radius: 8px; background: #15171c; color: #fff; font-size: 0.75rem; font-weight: 700; }
+.slide:not(.yellow) .news-cat { background: #ffe94d; color: #15171c; }
+
+.slide-deco { position: absolute; right: -30px; bottom: -40px; height: 300px; opacity: 0.18; pointer-events: none; }
+.slide.yellow .slide-deco { filter: brightness(0); opacity: 0.08; }
+
+.controls { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 0 6px; }
+.dots { display: flex; gap: 8px; align-items: center; }
+.dot { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 4px; background: #c9ced6; cursor: pointer; transition: width 0.2s, background 0.2s; }
+.dot.on { width: 28px; background: #0067b1; }
+.arrows { display: flex; gap: 8px; }
+.round { width: 36px; height: 36px; border-radius: 50%; border: 1px solid #c9ced6; background: #fff; color: #3d434d; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.15s, border-color 0.15s; }
+.round mat-icon { font-size: 20px; width: 20px; height: 20px; }
+.round:hover { background: #e8f1fa; border-color: #8fb8dc; color: #0067b1; }
+.round.primary { background: #0067b1; border-color: #0067b1; color: #fff; }
+.round.primary:hover { background: #004e87; }
+.dot:focus-visible, .round:focus-visible, .btn-see:focus-visible { outline: 3px solid rgba(0, 103, 177, 0.4); outline-offset: 2px; }
+
+@media (max-width: 760px) {
+  .slide { padding: 22px 18px; min-height: 220px; border-radius: 20px; }
+  .slide-art { border-radius: 20px; }
+  .controls { flex-wrap: wrap; }
+  .slide-text h2 { font-size: 1.4rem; }
+  .cas-head h1 { font-size: 1.35rem; }
+}
+
+/* Notícia de banca: a arte ocupa o slide inteiro (16:9); em telas largas, as sobras mostram a arte desfocada */
+.slide-art { position: relative; overflow: hidden; aspect-ratio: 16 / 9; max-height: 460px; width: 100%; border-radius: 28px; background: #15171c; }
+.slide-art img, .slide-art iframe { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; border: 0; display: block; }
+.slide-art .art-bg { position: absolute; inset: -40px; background: center / cover no-repeat; filter: blur(28px) brightness(0.7); }
+.slide-text small { opacity: 0.75; }
+.btn-see {
+  display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 16px; border-radius: 18px;
+  background: #15171c; color: #fff; text-decoration: none; font-weight: 600; font-size: 0.92rem; transition: background 0.15s;
+}
+.btn-see mat-icon { font-size: 18px; width: 18px; height: 18px; }
+.btn-see:hover { background: #3d434d; }
+.arrows { align-items: center; }

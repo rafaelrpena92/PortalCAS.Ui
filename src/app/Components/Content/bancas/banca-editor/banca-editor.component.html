@@ -1,0 +1,343 @@
+<div class="page">
+  <a routerLink="/gerenciar-bancas" class="back"><mat-icon>chevron_left</mat-icon> Gerenciar bancas</a>
+
+  <div class="header">
+    <div>
+      <div class="sub">
+        {{ isNew() ? 'Nova banca' : statusLabel[saved()!.status] }} · {{ _userService.selectedEntity()?.name }}
+        @if (saved(); as s) { @if (s.status === BancaStatus.Ativa) { · <span class="phase" [style.color]="phases[s.phase].fg">{{ phases[s.phase].label }}</span> } }
+      </div>
+      <h1>{{ form().title || 'Nova banca' }}</h1>
+    </div>
+    <div class="header-actions">
+      @if (saved() && saved()!.status !== BancaStatus.Rascunho) {
+        <a class="btn-outline" [routerLink]="['/bancas', form().id]"><mat-icon>visibility</mat-icon> Ver página</a>
+      }
+      @if (!isCanceled()) {
+        <button type="button" class="btn-outline" [disabled]="isSaving()" (click)="saveDraft()" title="Salva tudo o que já foi preenchido, em qualquer etapa"><mat-icon>save</mat-icon> {{ isDraft() ? 'Salvar rascunho' : 'Salvar' }}</button>
+      }
+    </div>
+  </div>
+
+  @if (isCanceled()) {
+    <div class="canceled"><mat-icon>cancel</mat-icon> Banca cancelada{{ saved()?.canceledByEmail ? ' por ' + saved()?.canceledByEmail : '' }}: {{ saved()?.cancelReason }}. Não pode mais ser alterada.</div>
+  }
+
+  <nav class="stepper" aria-label="Etapas">
+    <ol>
+      @for (s of steps; track s.n) {
+        <li>
+          <button type="button" [class.current]="step() === s.n" [class.done]="stepDone(s.n)" [attr.aria-current]="step() === s.n ? 'step' : null" (click)="goTo(s.n)">
+            <span class="num">@if (stepDone(s.n)) { <mat-icon>check</mat-icon> } @else { {{ s.n }} }</span>
+            {{ s.label }}
+          </button>
+        </li>
+      }
+    </ol>
+  </nav>
+
+  @if (isLoading()) {
+    <div class="empty">Carregando banca...</div>
+  } @else {
+  <fieldset [disabled]="isCanceled()">
+
+  <!-- 1. INFORMAÇÕES -->
+  @if (step() === 1) {
+    @if (showErrors() && missingInfo().length) {
+      <div class="errors"><mat-icon>error</mat-icon><span>Para seguir, preencha: {{ missingInfo().join(', ') }}.</span></div>
+    }
+    <section class="card">
+      <h2>Tipo de banca</h2>
+      <div class="types" role="radiogroup" aria-label="Tipo de banca">
+        @for (o of typeOptions; track o.type) {
+          <button type="button" role="radio" class="type" [class.on]="form().type === o.type" [attr.aria-checked]="form().type === o.type" (click)="chooseType(o)">
+            <strong>{{ o.label }}</strong><span>{{ o.hint }}</span>
+          </button>
+        }
+      </div>
+      @if (form().type === BancaType.Outra) {
+        <label class="field"><span>Nome do tipo de banca <span class="req">*</span></span><input class="input" [class.invalid]="showErrors() && !form().customTypeName?.trim()" [ngModel]="form().customTypeName" (ngModelChange)="set('customTypeName', $event)" maxlength="120" placeholder="Ex.: Guia-intérprete"></label>
+      }
+      <div class="grid">
+        <label class="field full"><span>Título da banca <span class="req">*</span></span><input class="input" [class.invalid]="showErrors() && missingInfo().includes('título da banca')" [ngModel]="form().title" (ngModelChange)="set('title', $event)" maxlength="200"></label>
+        <label class="field">Edital nº<input class="input" [ngModel]="form().editalNumber" (ngModelChange)="set('editalNumber', $event)" maxlength="40" placeholder="03/2026"></label>
+        <div class="field">
+          <span>Edital em PDF</span>
+          <div class="file">
+            <mat-icon>picture_as_pdf</mat-icon>
+            @if (saved()?.hasEdital) {
+              <a [href]="editalUrl()" target="_blank" rel="noopener" class="file-name">{{ saved()?.editalFileName }}</a>
+            } @else {
+              <span class="file-name muted">Nenhum arquivo</span>
+            }
+            <label class="link">{{ saved()?.hasEdital ? 'Trocar' : 'Enviar PDF' }}<input type="file" accept="application/pdf" hidden (change)="uploadEdital($event)"></label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div><h2>Sobre a banca</h2><p class="desc">Esses textos aparecem na página da banca, em "Sobre a banca".</p></div>
+      <label class="field"><span>Resumo <span class="req">*</span> <small>Duas ou três frases.</small></span>
+        <textarea rows="3" class="input" [class.invalid]="showErrors() && !form().summary?.trim()" [ngModel]="form().summary" (ngModelChange)="set('summary', $event)" maxlength="2000"></textarea></label>
+      <div class="stack">
+        <label class="field">Para quem é<textarea rows="3" class="input" [ngModel]="form().forWhom" (ngModelChange)="set('forWhom', $event)" maxlength="2000"></textarea></label>
+        <label class="field">Como é a avaliação<textarea rows="3" class="input" [ngModel]="form().howEvaluated" (ngModelChange)="set('howEvaluated', $event)" maxlength="2000"></textarea></label>
+        <label class="field">O que levar no dia<textarea rows="2" class="input" [ngModel]="form().whatToBring" (ngModelChange)="set('whatToBring', $event)" maxlength="2000"></textarea></label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Avaliação</h2>
+      <div class="levels-box">
+        <span class="levels-title">Níveis do CAS</span>
+        <div class="levels">
+          <span class="fail">abaixo de 7 · reprovado</span><span class="l3">7–8 · Nível 3</span><span class="l2">8–9 · Nível 2</span><span class="l1">9–10 · Nível 1</span>
+        </div>
+        <small>Média das notas dos avaliadores. As faixas são definidas pelo Administrador do CAS.</small>
+      </div>
+      <div class="field">
+        <span>Critérios avaliados <small>aparecem para o candidato</small></span>
+        <div class="chips">
+          @for (c of form().criteria; track c) {
+            <span class="chip">{{ c }}<button type="button" [attr.aria-label]="'Remover ' + c" (click)="removeCriterion(c)">×</button></span>
+          }
+          <span class="chip-add">
+            <input [(ngModel)]="newCriterion" placeholder="Novo critério" aria-label="Novo critério" (keyup.enter)="addCriterion()">
+            <button type="button" (click)="addCriterion()">+ Adicionar</button>
+          </span>
+        </div>
+      </div>
+    </section>
+  }
+
+  <!-- 2. DATA E LOCAL -->
+  @if (step() === 2) {
+    <div class="two-cols">
+      <div class="col">
+        <section class="card">
+          <div><h2>Datas</h2><p class="desc">Montam o cronograma da página da banca e as fases em "Gerenciar bancas".</p></div>
+          @if (showErrors() && missingSchedule().length) {
+            <div class="errors"><mat-icon>error</mat-icon><span>Para seguir, preencha: {{ missingSchedule().join(', ') }}.</span></div>
+          }
+          <div class="grid two">
+            <div class="field">
+              <span>Período de inscrições <span class="req">*</span></span>
+              <app-date-range-picker ariaLabel="Período de inscrições" [start]="form().inscriptionStart" [end]="form().inscriptionEnd"
+                [invalid]="showErrors() && (!form().inscriptionStart || !form().inscriptionEnd)" (rangeChange)="setInscriptions($event)"></app-date-range-picker>
+              <small class="help">A conferência dos documentos acontece durante as inscrições.</small>
+            </div>
+            <div class="field">
+              <span>Período da banca <span class="req">*</span></span>
+              <app-date-range-picker ariaLabel="Período da banca" [start]="form().examStart" [end]="form().examEnd" [min]="examMin()"
+                [invalid]="showErrors() && (!form().examStart || !form().examEnd || overlaps())" (rangeChange)="setExam($event)"></app-date-range-picker>
+              <small class="help">Pode ter um ou mais dias. O horário de cada candidato é definido pelos avaliadores antes da banca.</small>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Local</h2>
+          <div class="stack">
+            <label class="field"><span>Nome do local <span class="req">*</span></span><input class="input" [class.invalid]="showErrors() && !form().locationName?.trim()" [ngModel]="form().locationName" (ngModelChange)="set('locationName', $event)" maxlength="200" placeholder="Unicentro – Campus Santa Cruz"></label>
+            <div class="address">
+              <label class="field"><span>Endereço <span class="req">*</span></span><input class="input" [class.invalid]="showErrors() && !form().locationAddress?.trim()" [ngModel]="form().locationAddress" (ngModelChange)="set('locationAddress', $event)" maxlength="300" placeholder="Rua Salvatore Renna – Santa Cruz"></label>
+              <label class="field number"><span>Número <span class="req">*</span></span><input class="input" [class.invalid]="showErrors() && !form().locationNumber?.trim()" [ngModel]="form().locationNumber" (ngModelChange)="set('locationNumber', $event)" maxlength="20" placeholder="875"></label>
+            </div>
+            <label class="field"><span>Sala / bloco <span class="req">*</span></span><input class="input" [class.invalid]="showErrors() && !form().locationRoom?.trim()" [ngModel]="form().locationRoom" (ngModelChange)="set('locationRoom', $event)" maxlength="200" placeholder="Bloco D, salas 101 e 102"></label>
+            <label class="field">Informações adicionais <small>Acessibilidade, estacionamento, como chegar...</small><textarea rows="3" class="input" [ngModel]="form().locationNotes" (ngModelChange)="set('locationNotes', $event)" maxlength="1000"></textarea></label>
+          </div>
+        </section>
+      </div>
+
+      <aside class="side">
+        <span class="side-title">Cronograma gerado</span>
+        <ol class="timeline">
+          @for (t of timeline(); track t.label) {
+            <li [class.ok]="t.ok"><span class="dot"></span><span><strong>{{ t.label }}</strong><small>{{ t.date }}</small></span></li>
+          }
+        </ol>
+        <div class="note"><mat-icon>info</mat-icon> Só moradores das cidades atendidas pelo {{ _userService.selectedEntity()?.name }} podem se inscrever.</div>
+      </aside>
+    </div>
+  }
+
+  <!-- 3. DOCUMENTOS -->
+  @if (step() === 3) {
+    <section class="card soon">
+      <mat-icon>description</mat-icon>
+      <h2>Documentos exigidos</h2>
+      <p>A lista de documentos da inscrição (RG, comprovante de residência, diploma...) chega junto com as inscrições pelo portal, na próxima fase.</p>
+    </section>
+  }
+
+  <!-- 4. AVALIADORES -->
+  @if (step() === 4) {
+    <section class="card">
+      <div class="title-info">
+        <div><h2>Quantos avaliadores dão nota?</h2><p class="desc">Cada candidato precisa desta quantidade de notas para ter resultado.</p></div>
+        <button type="button" class="info-btn" [class.on]="showRules()" [attr.aria-expanded]="showRules()" aria-controls="regras-notas" (click)="showRules.set(!showRules())" title="Como funcionam as notas"><mat-icon>info</mat-icon></button>
+      </div>
+      <div class="graders">
+        <div class="counter">
+          <button type="button" aria-label="Diminuir" (click)="changeGraders(-1)">−</button>
+          <span aria-live="polite">{{ form().gradersCount }}</span>
+          <button type="button" aria-label="Aumentar" (click)="changeGraders(1)">+</button>
+        </div>
+        <p>O resultado de cada candidato sai quando <strong>{{ form().gradersCount }} avaliadores</strong> derem nota.</p>
+      </div>
+      @if (showRules()) {
+        <ul class="rules" id="regras-notas">
+          <li><b>1</b><span><strong>Qualquer avaliador do CAS</strong> pode dar nota, até completar {{ form().gradersCount }} notas por candidato.</span></li>
+          <li><b>2</b><span>A nota final é a <strong>média simples</strong> das notas. Notas diferentes não precisam de desempate.</span></li>
+          <li><b>3</b><span>Só quem deu a nota (ou um administrador) pode corrigi-la, mesmo depois do resultado. Toda correção fica no histórico.</span></li>
+        </ul>
+      }
+    </section>
+  }
+
+  <!-- 5. MÍDIA E ATIVAÇÃO -->
+  @if (step() === 5) {
+    <div class="two-cols">
+      <div class="col">
+        <section class="card">
+          <div><h2>Vídeo de apresentação em Libras</h2><p class="desc">Aparece no topo da página da banca. Opcional.</p></div>
+          <label class="field">Link do vídeo (YouTube)<input class="input" [ngModel]="form().videoUrl" (ngModelChange)="set('videoUrl', $event)" maxlength="500" placeholder="https://youtu.be/..."></label>
+          <label class="switch-row">
+            <input type="checkbox" class="switch" [ngModel]="form().videoHasSubtitles" (ngModelChange)="set('videoHasSubtitles', $event)">
+            <span><strong>Tem legenda em português</strong><small>Mostra o selo "com legenda".</small></span>
+          </label>
+        </section>
+
+        <section class="card">
+          <div><h2>Arte ou foto de divulgação <span class="req">*</span></h2><p class="desc">Obrigatória para concluir a etapa e ativar a banca. Aparece no topo da página da banca; se tiver vídeo também, o visitante alterna entre os dois.</p></div>
+
+          <div class="image-spec">
+            <div class="spec-frame"><span>16:9</span></div>
+            <ul>
+              <li><strong>Tamanho ideal:</strong> {{ imageRules.width }} × {{ imageRules.height }} px (16:9, mesmo formato do vídeo)</li>
+              <li><strong>Mínimo:</strong> {{ imageRules.minWidth }} px de largura</li>
+              <li><strong>Formato:</strong> JPG, PNG ou WebP, até {{ imageRules.maxMb }} MB</li>
+              <li>Deixe textos importantes longe das bordas; no celular a arte fica menor.</li>
+            </ul>
+          </div>
+
+          @if (saved()?.hasImage) {
+            <div class="image-preview">
+              @if (imagePreview(); as src) {
+                <img [src]="src" [alt]="form().imageAlt || 'Arte de divulgação'" (load)="onPreviewLoad($event)">
+              } @else {
+                <div class="image-loading"><mat-icon>image</mat-icon></div>
+              }
+            </div>
+            @if (imageSize(); as size) {
+              <p class="image-size" [class.warn]="imageWarning()">
+                <mat-icon>{{ imageWarning() ? 'warning' : 'check_circle' }}</mat-icon>
+                <span>{{ size.width }} × {{ size.height }} px. {{ imageWarning() ?? 'Tamanho bom.' }}</span>
+              </p>
+            }
+            <div class="image-actions">
+              <label class="btn-outline small" [class.disabled]="isSaving()"><mat-icon>upload</mat-icon> Trocar imagem<input type="file" accept="image/jpeg,image/png,image/webp" hidden [disabled]="isSaving()" (change)="uploadImage($event)"></label>
+              <button type="button" class="btn-outline small danger" [disabled]="isSaving()" (click)="removeImage()"><mat-icon>delete</mat-icon> Remover</button>
+            </div>
+          } @else {
+            <label class="image-drop" [class.disabled]="isSaving()">
+              <mat-icon>add_photo_alternate</mat-icon>
+              <strong>Enviar imagem</strong>
+              <small>{{ imageRules.width }} × {{ imageRules.height }} px · JPG, PNG ou WebP · até {{ imageRules.maxMb }} MB</small>
+              <input type="file" accept="image/jpeg,image/png,image/webp" hidden [disabled]="isSaving()" (change)="uploadImage($event)">
+            </label>
+          }
+
+          <label class="field">Descrição da imagem
+            <input class="input" [ngModel]="form().imageAlt" (ngModelChange)="set('imageAlt', $event)" maxlength="500" placeholder="Ex.: Cartaz da banca com datas e local">
+            <small class="hint">Lida por leitores de tela para pessoas cegas. Descreva o que a arte mostra, inclusive os textos.</small>
+          </label>
+        </section>
+
+        <section class="card">
+          <h2>Divulgação</h2>
+          @if (form().videoUrl?.trim() && saved()?.hasImage) {
+            <div class="field">
+              <span>O que aparece nas notícias do Início</span>
+              <div class="media-choice" role="radiogroup" aria-label="Mídia das notícias">
+                <label [class.on]="!form().newsShowsVideo">
+                  <input type="radio" name="newsMedia" [checked]="!form().newsShowsVideo" (change)="set('newsShowsVideo', false)">
+                  <mat-icon>image</mat-icon> Arte
+                </label>
+                <label [class.on]="form().newsShowsVideo">
+                  <input type="radio" name="newsMedia" [checked]="form().newsShowsVideo" (change)="set('newsShowsVideo', true)">
+                  <mat-icon>play_circle</mat-icon> Vídeo
+                </label>
+              </div>
+              <small class="hint">A banca tem arte e vídeo. Na página da banca os dois aparecem; nas notícias, só o escolhido.</small>
+            </div>
+          } @else if (form().videoUrl?.trim() || saved()?.hasImage) {
+            <p class="hint">Nas notícias do Início aparece {{ saved()?.hasImage ? 'a arte' : 'o vídeo' }}.</p>
+          }
+          <label class="switch-row">
+            <input type="checkbox" class="switch" [ngModel]="form().highlight" (ngModelChange)="set('highlight', $event)">
+            <span><strong>Destacar na página inicial</strong><small>A notícia da banca entra em destaque no Início.</small></span>
+          </label>
+          <label class="switch-row">
+            <input type="checkbox" class="switch" [ngModel]="form().notifyRegion" (ngModelChange)="set('notifyRegion', $event)">
+            <span><strong>Avisar candidatos da região por e-mail</strong><small>Para quem mora nas cidades do CAS. Envio de e-mails chega em breve.</small></span>
+          </label>
+          <label class="switch-row">
+            <input type="checkbox" class="switch" [ngModel]="form().notifyExpiringCertificates" (ngModelChange)="set('notifyExpiringCertificates', $event)">
+            <span><strong>Avisar quem tem certificado vencendo</strong><small>Certificados que vencem nos próximos 6 meses.</small></span>
+          </label>
+        </section>
+
+        <section class="card">
+          <div class="title-info">
+            <h2>Ativação</h2>
+            <button type="button" class="info-btn" [class.on]="showActivationInfo()" [attr.aria-expanded]="showActivationInfo()" aria-controls="info-ativacao" (click)="showActivationInfo.set(!showActivationInfo())" title="Como funciona a ativação"><mat-icon>info</mat-icon></button>
+          </div>
+          <ol class="phase-strip">
+            @for (t of timeline(); track t.label) {
+              <li><small>{{ t.date }}</small><strong>{{ t.label }}</strong></li>
+            }
+          </ol>
+          @if (showActivationInfo()) {
+            <div class="note" id="info-ativacao"><mat-icon>info</mat-icon>
+              <span>Enquanto estiver em <strong>rascunho</strong>, a banca não aparece no site. Ao <strong>ativar</strong>, a notícia é criada e a fase passa a seguir as datas. Qualquer avaliador do CAS pode ativar; quem ativou fica registrado no histórico.</span>
+            </div>
+          }
+        </section>
+      </div>
+
+      <aside class="side">
+        <span class="side-title">Revisão</span>
+        @if (saved(); as s) {
+          @if (s.missingForActivation.length === 0) {
+            <div class="review ok"><mat-icon>check_circle</mat-icon> Tudo pronto para ativar.</div>
+          } @else {
+            <div class="review"><strong>Falta preencher</strong>
+              <ul>@for (m of s.missingForActivation; track m) { <li>{{ m }}</li> }</ul>
+            </div>
+          }
+        } @else {
+          <div class="review">Salve a banca para ver o que falta.</div>
+        }
+        @if (isDraft()) {
+          <button type="button" class="btn-primary full" [disabled]="isSaving() || !isComplete()" [title]="isComplete() ? '' : 'Complete todas as etapas para ativar'" (click)="activate()">Ativar banca</button>
+        }
+      </aside>
+    </div>
+  }
+
+  </fieldset>
+
+  <div class="footer">
+    @if (step() > 1) {
+      <button type="button" class="btn-outline" (click)="goTo(step() - 1)">← Voltar</button>
+    } @else { <span></span> }
+    @if (step() < 5 && !isCanceled()) {
+      <button type="button" class="btn-primary" [disabled]="isSaving()" (click)="saveAndContinue()">{{ isSaving() ? 'Salvando...' : 'Continuar →' }}</button>
+    } @else if (step() < 5) {
+      <button type="button" class="btn-primary" (click)="goTo(step() + 1)">Próxima →</button>
+    }
+  </div>
+  }
+</div>

@@ -1,0 +1,126 @@
+.page { width: 100%; display: flex; flex-direction: column; gap: 20px; }
+
+.back { align-self: flex-start; display: inline-flex; align-items: center; height: 36px; padding: 0 12px 0 4px; border: 1px solid #e3e6ea; border-radius: 18px; color: #15171c; text-decoration: none; font-weight: 500; }
+.back:hover { background: #f6f7f9; }
+
+.head { display: flex; flex-direction: column; gap: 10px; }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip { padding: 3px 10px; border-radius: 8px; font-size: 0.78rem; font-weight: 600; }
+.chip.muted { background: #eef1f5; color: #3d434d; }
+.title-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+.title-row h1 { margin: 0; font-size: 2rem; font-weight: 700; line-height: 1.15; flex: 1 1 400px; }
+
+.canceled { display: flex; gap: 10px; align-items: center; padding: 14px 16px; border-radius: 16px; background: #fde8e8; color: #6e0b0e; }
+
+.top { display: flex; gap: 20px; flex-wrap: wrap; align-items: stretch; }
+/* Lado a lado, a mídia (sempre 16:9, sem bordas) define a altura e o cartão de datas acompanha */
+@media (min-width: 1000px) {
+  .top .date-card { contain: size; overflow-y: auto; }
+}
+.video { flex: 3 1 420px; position: relative; aspect-ratio: 16 / 9; border-radius: 24px; overflow: hidden; background: #15171c; }
+.video iframe { width: 100%; height: 100%; border: 0; display: block; }
+.video-empty { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; background: #e8f1fa; color: #004e87; font-weight: 600; }
+.video-empty img { height: 45%; opacity: 0.5; }
+.video-badge { position: absolute; left: 14px; bottom: 12px; padding: 4px 10px; border-radius: 14px; background: rgba(21, 23, 28, 0.85); color: #fff; font-size: 0.78rem; font-weight: 600; }
+
+.date-card { flex: 2 1 300px; display: flex; flex-direction: column; gap: 14px; padding: 22px; border: 1px solid #e3e6ea; border-radius: 24px; background: #fff; box-shadow: 0 16px 40px -24px rgba(21, 23, 28, 0.3); }
+.when { display: flex; gap: 14px; align-items: center; }
+.date-block { flex: 0 0 auto; min-width: 64px; padding: 0 8px; box-sizing: border-box; height: 72px; border-radius: 14px; background: #0067b1; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.date-block .d { font-size: 1.6rem; font-weight: 700; line-height: 1; white-space: nowrap; }
+.date-block .m { font-size: 0.75rem; font-weight: 600; margin-top: 4px; }
+.weekday { font-size: 1.1rem; font-weight: 700; }
+.hours { display: flex; gap: 6px; align-items: flex-start; margin-top: 6px; padding: 8px 10px; border-radius: 12px; background: #e8f1fa; color: #004e87; font-size: 0.86rem; line-height: 1.35; }
+.hours mat-icon { flex: 0 0 auto; font-size: 16px; width: 16px; height: 16px; margin-top: 1px; color: #0067b1; }
+
+.facts { margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.facts div { padding: 10px 12px; border-radius: 14px; background: #f6f7f9; }
+.facts dt { font-size: 0.78rem; font-weight: 400; color: #555b66; }
+.facts dd { margin: 2px 0 0; font-weight: 700; }
+
+.levels { display: flex; gap: 6px; text-align: center; font-size: 0.75rem; font-weight: 600; }
+.levels span { flex: 1; padding: 7px 4px; border-radius: 10px; }
+.levels .l3 { background: #cfe3f5; }
+.levels .l2 { background: #8fb8dc; }
+.levels .l1 { background: #0067b1; color: #fff; }
+
+.notice { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 14px; font-size: 0.92rem; text-decoration: none; }
+.notice mat-icon { flex: 0 0 auto; font-size: 20px; width: 20px; height: 20px; }
+.notice.ok { background: #e3f4ea; color: #0f5b30; }
+.notice.warn { background: #fff6bf; color: #4a3d00; }
+.notice.info { background: #e8f1fa; color: #004e87; }
+
+.btn-primary, .btn-outline, .btn-light {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 48px; padding: 0 20px; border-radius: 14px; font-weight: 600; text-decoration: none; cursor: pointer;
+}
+.btn-primary { border: none; background: #0067b1; color: #fff; }
+.btn-primary:disabled { background: #9fb3c8; cursor: default; }
+.btn-primary.small { height: 44px; }
+.btn-outline { border: 1px solid #c9ced6; background: #fff; color: #15171c; }
+.btn-outline:hover { background: #f6f7f9; }
+.btn-light { border: none; background: #fff; color: #004e87; }
+.self-start { align-self: flex-start; }
+.soon { color: #555b66; text-align: center; }
+
+.card { display: flex; flex-direction: column; gap: 16px; padding: 28px; border: 1px solid #d4d8de; border-radius: 28px; background: #fff; }
+.card h2 { margin: 0; font-size: 1.35rem; font-weight: 700; }
+.lead { margin: 0; font-size: 1.05rem; line-height: 1.6; color: #3d434d; }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.tile { display: flex; flex-direction: column; gap: 6px; padding: 18px; border-radius: 18px; background: #f2f7fd; }
+.tile mat-icon { color: #0067b1; }
+.tile.yellow { background: #fffbe0; }
+.tile.yellow mat-icon { color: #b38600; }
+.tile.red { background: #fdf0f0; }
+.tile.red mat-icon { color: #d7141a; }
+.tile span { color: #3d434d; font-size: 0.92rem; line-height: 1.5; }
+
+.criteria { display: flex; flex-direction: column; gap: 8px; }
+.criteria .label { font-weight: 600; font-size: 0.9rem; }
+.criteria div { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.timeline { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.timeline li { position: relative; display: flex; gap: 14px; padding: 0 0 18px; }
+.timeline li:not(:last-child)::before { content: ''; position: absolute; left: 13px; top: 28px; bottom: 0; width: 2px; background: #e3e6ea; }
+.timeline li.done:not(:last-child)::before { background: #1d7a46; }
+.mark { flex: 0 0 28px; height: 28px; border-radius: 50%; border: 2px solid #c9ced6; background: #fff; display: flex; align-items: center; justify-content: center; box-sizing: border-box; }
+.done .mark { border-color: #1d7a46; background: #1d7a46; color: #fff; }
+.done .mark mat-icon { font-size: 16px; width: 16px; height: 16px; }
+.current .mark { border-color: #0067b1; box-shadow: 0 0 0 4px rgba(0, 103, 177, 0.15); }
+.step { display: flex; flex-direction: column; }
+.step span { color: #555b66; font-size: 0.92rem; }
+.current .step strong { color: #004e87; }
+
+.place { display: flex; gap: 12px; align-items: flex-start; }
+.place mat-icon { color: #d7141a; }
+.place div { display: flex; flex-direction: column; }
+.place span { color: #555b66; }
+.place-info { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+.place-info div { padding: 10px 12px; border-radius: 14px; background: #f6f7f9; }
+.place-info dt { font-size: 0.78rem; font-weight: 400; color: #555b66; }
+.place-info dd { margin: 2px 0 0; }
+.place-notes { padding: 12px 14px; border-radius: 14px; background: #f6f7f9; }
+.place-notes span { font-size: 0.78rem; color: #555b66; }
+.place-notes p { margin: 2px 0 0; white-space: pre-line; line-height: 1.5; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.empty { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 48px 16px; border: 1px dashed #c9ced6; border-radius: 20px; color: #555b66; }
+
+@media (max-width: 600px) {
+  .title-row h1 { font-size: 1.5rem; }
+  .card { padding: 16px; border-radius: 20px; }
+  .date-card { padding: 16px; }
+  .video { border-radius: 18px; }
+  .actions > * { flex: 1; }
+}
+
+/* Arte de divulgação e troca vídeo/arte */
+/* A caixa pode ficar mais alta que 16:9 (acompanha o cartão de datas): a arte aparece inteira e as sobras mostram ela mesma desfocada */
+.video .art { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; display: block; }
+.video .art-bg { position: absolute; inset: -40px; background: center / cover no-repeat; filter: blur(28px) brightness(0.75); }
+.media-switch { position: absolute; right: 12px; top: 12px; display: flex; gap: 2px; padding: 3px; border-radius: 12px; background: rgba(21, 23, 28, 0.8); }
+.media-switch button { display: inline-flex; align-items: center; gap: 4px; border: 0; border-radius: 9px; padding: 5px 10px; background: transparent; color: #fff; font-size: 0.82rem; font-weight: 600; cursor: pointer; }
+.media-switch button mat-icon { font-size: 16px; width: 16px; height: 16px; }
+.media-switch button:hover { background: rgba(255, 255, 255, 0.15); }
+.media-switch button.on { background: #fff; color: #15171c; }
+.media-switch button:focus-visible { outline: 2px solid #fff; outline-offset: 1px; }

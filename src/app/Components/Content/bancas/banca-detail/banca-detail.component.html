@@ -1,0 +1,165 @@
+@if (banca(); as b) {
+<div class="page">
+  <a routerLink="/bancas" class="back"><mat-icon>chevron_left</mat-icon> Bancas</a>
+
+  <div class="head">
+    <div class="chips">
+      <span class="chip" [style.background]="phase().bg" [style.color]="phase().fg">{{ phase().label }}</span>
+      @if (b.editalNumber) { <span class="chip muted">Edital {{ b.editalNumber }}</span> }
+      <span class="chip muted">{{ b.entityName }}</span>
+    </div>
+    <div class="title-row">
+      <h1>{{ b.title }}</h1>
+      @if (b.canManage) {
+        <a class="btn-outline" [routerLink]="['/gerenciar-bancas', b.id]"><mat-icon>edit</mat-icon> Editar banca</a>
+      }
+    </div>
+  </div>
+
+  @if (b.phase === BancaPhase.Cancelada) {
+    <div class="canceled">
+      <mat-icon>cancel</mat-icon>
+      <span><strong>Esta banca foi cancelada.</strong> {{ b.cancelReason }}</span>
+    </div>
+  }
+
+  <div class="top">
+    <div class="video">
+      @if (b.hasImage && (!b.videoUrl || media() === 'image')) {
+        <div class="art-bg" [style.background-image]="'url(' + imageUrl() + ')'"></div>
+        <img class="art" [src]="imageUrl()" [alt]="b.imageAlt || 'Arte de divulgação da banca'">
+      } @else {
+        @if (video(); as url) {
+          <iframe [src]="url" title="Apresentação da banca em Libras" allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+        } @else {
+          <div class="video-empty">
+            <img src="img/maos-libras.png" alt="">
+            @if (b.videoUrl) {
+              <a [href]="b.videoUrl" target="_blank" rel="noopener" class="btn-light"><mat-icon>play_circle</mat-icon> Assistir à apresentação em Libras</a>
+            } @else {
+              <span>Vídeo em Libras em breve</span>
+            }
+          </div>
+        }
+      }
+      @if (b.videoHasSubtitles && b.videoUrl && media() === 'video') { <span class="video-badge">Libras · com legenda</span> }
+      @if (b.hasImage && b.videoUrl) {
+        <div class="media-switch" role="group" aria-label="Escolher mídia">
+          <button type="button" [class.on]="media() === 'video'" [attr.aria-pressed]="media() === 'video'" (click)="media.set('video')"><mat-icon>play_circle</mat-icon> Vídeo</button>
+          <button type="button" [class.on]="media() === 'image'" [attr.aria-pressed]="media() === 'image'" (click)="media.set('image')"><mat-icon>image</mat-icon> Arte</button>
+        </div>
+      }
+    </div>
+
+    <aside class="date-card">
+      <div class="when">
+        <span class="date-block"><span class="d">{{ day() }}</span><span class="m">{{ month() }}</span></span>
+        <div>
+          <div class="weekday">{{ isMultiDay() ? formatPeriod(b.examStart, b.examEnd) : formatDate(b.examStart) }}</div>
+          <div class="hours"><mat-icon>schedule</mat-icon><span>O horário de cada candidato é informado pelo CAS antes da banca.</span></div>
+        </div>
+      </div>
+
+
+      <dl class="facts">
+        <div><dt>Aprovação</dt><dd>Nota 7 ou mais</dd></div>
+        <div><dt>Notas por candidato</dt><dd>{{ b.gradersCount }} avaliadores</dd></div>
+      </dl>
+      <div class="levels">
+        <span class="l3">7–8 · Nível 3</span><span class="l2">8–9 · Nível 2</span><span class="l1">9–10 · Nível 1</span>
+      </div>
+
+      @switch (residence()) {
+        @case ('here') {
+          <div class="notice ok"><mat-icon>check</mat-icon><span>Você mora em <strong>{{ _userService.domainUser()?.city?.name }}</strong>, região deste CAS. Pode se inscrever.</span></div>
+        }
+        @case ('other') {
+          <div class="notice warn"><mat-icon>info</mat-icon><span>A inscrição é só para moradores da região do {{ b.entityName }}. O seu CAS é o {{ _userService.domainUser()?.residenceEntity?.name }}.</span></div>
+        }
+        @case ('unknown') {
+          <a routerLink="/meus-dados" class="notice warn"><mat-icon>location_on</mat-icon><span>Informe a cidade onde você mora para saber se pode se inscrever.</span></a>
+        }
+      }
+
+      @if (b.phase === BancaPhase.InscricoesAbertas) {
+        @if (residence() === 'visitor') {
+          <a routerLink="/login" class="btn-primary"><mat-icon>login</mat-icon> Entrar para se inscrever</a>
+        } @else if (residence() === 'here') {
+          <button type="button" class="btn-primary" disabled title="A inscrição pelo portal chega na próxima versão">Inscrever-me nesta banca</button>
+          <small class="soon">A inscrição pelo portal chega na próxima versão.</small>
+        }
+      } @else if (b.phase === BancaPhase.InscricoesEmBreve) {
+        <div class="notice info"><mat-icon>schedule</mat-icon><span>Inscrições a partir de <strong>{{ formatDate(b.inscriptionStart) }}</strong>.</span></div>
+      }
+    </aside>
+  </div>
+
+  <section class="card">
+    <h2>Sobre a banca</h2>
+    @if (b.summary) { <p class="lead">{{ b.summary }}</p> }
+    <div class="tiles">
+      @if (b.forWhom) {
+        <div class="tile"><mat-icon>groups</mat-icon><strong>Para quem é</strong><span>{{ b.forWhom }}</span></div>
+      }
+      @if (b.howEvaluated) {
+        <div class="tile yellow"><mat-icon>fact_check</mat-icon><strong>Como é a avaliação</strong><span>{{ b.howEvaluated }}</span></div>
+      }
+      @if (b.whatToBring) {
+        <div class="tile red"><mat-icon>badge</mat-icon><strong>O que levar no dia</strong><span>{{ b.whatToBring }}</span></div>
+      }
+    </div>
+    @if (b.criteria.length) {
+      <div class="criteria">
+        <span class="label">Critérios avaliados</span>
+        <div>@for (c of b.criteria; track c) { <span class="chip muted">{{ c }}</span> }</div>
+      </div>
+    }
+    @if (b.hasEdital) {
+      <a class="btn-outline self-start" [href]="editalUrl()" target="_blank" rel="noopener"><mat-icon>download</mat-icon> Baixar edital completo (PDF)</a>
+    }
+  </section>
+
+  <section class="card">
+    <h2>Cronograma</h2>
+    <ol class="timeline">
+      @for (s of schedule(); track s.label) {
+        <li [class.done]="s.done" [class.current]="s.current">
+          <span class="mark">@if (s.done) { <mat-icon>check</mat-icon> }</span>
+          <span class="step"><strong>{{ s.label }}</strong><span>{{ s.date }}</span></span>
+        </li>
+      }
+    </ol>
+  </section>
+
+  @if (b.locationName) {
+    <section class="card">
+      <h2>Local</h2>
+      <div class="place">
+        <mat-icon>location_on</mat-icon>
+        <div>
+          <strong>{{ b.locationName }}</strong>
+          @if (b.locationAddress) { <span>{{ b.locationAddress }}{{ b.locationNumber ? ', ' + b.locationNumber : '' }}</span> }
+          @if (b.locationRoom) { <span>{{ b.locationRoom }}</span> }
+        </div>
+      </div>
+      @if (b.locationNotes) {
+        <div class="place-notes"><span>Informações adicionais</span><p>{{ b.locationNotes }}</p></div>
+      }
+      <div class="actions">
+        <a class="btn-primary small" [href]="mapsUrl()" target="_blank" rel="noopener"><mat-icon>directions</mat-icon> Como chegar</a>
+        <button type="button" class="btn-outline" (click)="copyAddress()"><mat-icon>content_copy</mat-icon> Copiar endereço</button>
+      </div>
+    </section>
+  }
+</div>
+} @else if (notFound()) {
+<div class="page">
+  <div class="empty">
+    <mat-icon>event_busy</mat-icon>
+    <strong>Banca não encontrada</strong>
+    <a routerLink="/bancas">Ver as bancas do CAS</a>
+  </div>
+</div>
+} @else {
+<div class="page"><div class="empty">Carregando banca...</div></div>
+}

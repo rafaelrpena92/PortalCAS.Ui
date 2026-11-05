@@ -1,0 +1,37 @@
+<div class="tmp-field" [class.open]="open()" [class.disabled]="disabled" [class.invalid]="invalid && !open()" cdkOverlayOrigin #origin="cdkOverlayOrigin">
+  <input #input [id]="inputId || id" type="text" inputmode="numeric" placeholder="--:--" autocomplete="off"
+    [value]="text()" [disabled]="disabled" [attr.aria-label]="ariaLabel || null"
+    (input)="onType($any($event.target).value)" (blur)="onBlur()" (keydown)="onKey($event)">
+  <button type="button" class="tmp-btn" [disabled]="disabled" aria-label="Escolher horário" [attr.aria-expanded]="open()" (click)="toggle()">
+    <mat-icon>schedule</mat-icon>
+  </button>
+</div>
+
+<ng-template cdkConnectedOverlay [cdkConnectedOverlayOrigin]="origin" [cdkConnectedOverlayOpen]="open()"
+  [cdkConnectedOverlayPositions]="positions" (overlayOutsideClick)="open.set(false)" (detach)="open.set(false)">
+  <div class="panel" role="dialog" aria-label="Escolher horário" (keydown)="onKey($event)">
+    <div class="cols">
+      <div class="col">
+        <span class="col-title">Hora</span>
+        <div #hoursCol class="list" role="listbox" aria-label="Hora">
+          @for (h of hours; track h) {
+            <button type="button" role="option" class="item" [class.selected]="h === hour()" [attr.aria-selected]="h === hour()" (click)="pickHour(h)">{{ pad(h) }}</button>
+          }
+        </div>
+      </div>
+      <span class="sep">:</span>
+      <div class="col">
+        <span class="col-title">Minuto</span>
+        <div #minutesCol class="list" role="listbox" aria-label="Minuto">
+          @for (m of minutes(); track m) {
+            <button type="button" role="option" class="item" [class.selected]="m === minute()" [attr.aria-selected]="m === minute()" (click)="pickMinute(m)">{{ pad(m) }}</button>
+          }
+        </div>
+      </div>
+    </div>
+    <div class="foot">
+      <button type="button" class="link" (click)="clear()">Limpar</button>
+      <button type="button" class="link strong" (click)="open.set(false)">Pronto</button>
+    </div>
+  </div>
+</ng-template>

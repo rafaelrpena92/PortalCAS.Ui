@@ -5,7 +5,7 @@ import { AuthService } from '../Services/auth.service';
 import { EntityRole } from '../Models/EntityAggregate/Entities/Entity.model';
 
 /** Perfis que uma rota pode exigir em data.expectedRole. */
-export type ExpectedRole = 'adminGeral' | 'adminCas';
+export type ExpectedRole = 'adminGeral' | 'adminCas' | 'avaliador';
 
 /**
  * Só confere o acesso à tela. A API valida de novo em cada operação.
@@ -32,9 +32,11 @@ export const roleGuard: CanActivateFn = async (route, state) => {
   }
 
   const isAdminGeral = _userService.isAdminGeral();
-  const isAdminCas = isAdminGeral || (_userService.domainUser()?.roles ?? []).some(r => r.role === EntityRole.AdminCas);
+  const roles = _userService.domainUser()?.roles ?? [];
+  const isAdminCas = isAdminGeral || roles.some(r => r.role === EntityRole.AdminCas);
+  const isAvaliador = isAdminGeral || roles.some(r => !!r.role);
 
-  if ((expectedRole === 'adminGeral' && isAdminGeral) || (expectedRole === 'adminCas' && isAdminCas))
+  if ((expectedRole === 'adminGeral' && isAdminGeral) || (expectedRole === 'adminCas' && isAdminCas) || (expectedRole === 'avaliador' && isAvaliador))
     return true;
 
   console.warn("Acesso negado à rota:", state.url);

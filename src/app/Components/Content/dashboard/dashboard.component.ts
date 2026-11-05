@@ -83,6 +83,13 @@ export class DashboardComponent {
       });
     }
 
+    if (user.isAvaliadorInSelected()) {
+      sections.push({
+        title: 'AVALIADOR',
+        items: [{ label: 'Gerenciar bancas', icon: 'edit_calendar', link: '/gerenciar-bancas' }]
+      });
+    }
+
     const admin: MenuItem[] = [];
     if (user.isAdminCasInSelected())
       admin.push({ label: 'Usuários', icon: 'group', link: '/usuarios' });

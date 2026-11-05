@@ -7,15 +7,75 @@
     </a>
   }
 
-  <section class="hero">
-    <span class="eyebrow">Você está vendo</span>
+  <div class="cas-head">
     <h1>{{ _userService.selectedEntity()?.name ?? 'Portal CAS' }}</h1>
-    <p>Bancas de proficiência em Libras, notícias e certificados do seu CAS. Para trocar de CAS, clique no nome dele na barra azul.</p>
-    @if (!_userService.isLoggedIn()) {
-      <a routerLink="/login" class="btn-primary-pill">
-        <mat-icon>login</mat-icon> Entrar ou criar conta
-      </a>
-    }
+    <button type="button" class="info-btn" [class.on]="showCasInfo()" [attr.aria-expanded]="showCasInfo()" aria-controls="dica-cas" (click)="showCasInfo.set(!showCasInfo())" title="Sobre esta página"><mat-icon>info</mat-icon></button>
+  </div>
+  @if (showCasInfo()) {
+    <div class="tip" id="dica-cas"><mat-icon>info</mat-icon>
+      <span>Você está vendo as bancas, notícias e certificados deste CAS. Para trocar de CAS, clique no nome dele na barra azul.</span>
+    </div>
+  }
+
+  @if (current(); as n) {
+    <section class="news-hero" aria-roledescription="carrossel" aria-label="Notícias" (mouseenter)="hovering.set(true)" (mouseleave)="hovering.set(false)" (focusin)="hovering.set(true)" (focusout)="hovering.set(false)">
+      @if (hasMedia(n)) {
+        <!-- Notícia de banca: só a arte (ou o vídeo escolhido); o texto está na própria arte -->
+        <div class="slide-art" aria-live="polite">
+          @if (n.bancaImageVersion && n.bancaId) {
+            <div class="art-bg" [style.background-image]="'url(' + imageUrl(n) + ')'"></div>
+            <img [src]="imageUrl(n)" [alt]="n.bancaImageAlt || n.title">
+          } @else if (videoFor(n)) {
+            <iframe [src]="videoFor(n)" [title]="'Vídeo em Libras: ' + n.title" allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+          }
+        </div>
+      } @else {
+        <!-- Comunicado ou notícia sem mídia: texto -->
+        <div class="slide" [class.yellow]="n.highlight" aria-live="polite">
+          <div class="slide-text">
+            <span class="news-cat">{{ n.category }}</span>
+            <h2>{{ n.title }}</h2>
+            @if (n.summary) { <p>{{ n.summary }}</p> }
+            <small>{{ newsDate(n) }}</small>
+          </div>
+          <img class="slide-deco" src="img/maos-libras.png" alt="">
+        </div>
+      }
+
+      @if (news().length > 1 || n.bancaId) {
+        <div class="controls">
+          <div class="dots">
+            @for (item of news().length > 1 ? news() : []; track item.id; let i = $index) {
+              <button type="button" class="dot" [class.on]="i === index()" [attr.aria-label]="'Notícia ' + (i + 1) + ' de ' + news().length" [attr.aria-current]="i === index()" (click)="goTo(i)"></button>
+            }
+          </div>
+          <div class="arrows">
+            @if (n.bancaId) {
+              <a class="btn-see" [routerLink]="['/bancas', n.bancaId]">{{ n.category === 'Comunicado' ? 'Ler comunicado' : 'Ver banca' }} <mat-icon>arrow_forward</mat-icon></a>
+            }
+            @if (news().length > 1) {
+            <button type="button" class="round" (click)="playing.set(!playing())" [attr.aria-label]="playing() ? 'Pausar' : 'Tocar'" [title]="playing() ? 'Pausar' : 'Tocar'"><mat-icon>{{ playing() ? 'pause' : 'play_arrow' }}</mat-icon></button>
+            <button type="button" class="round" (click)="goTo(index() - 1)" aria-label="Notícia anterior" title="Anterior"><mat-icon>chevron_left</mat-icon></button>
+            <button type="button" class="round primary" (click)="goTo(index() + 1)" aria-label="Próxima notícia" title="Próxima"><mat-icon>chevron_right</mat-icon></button>
+            }
+          </div>
+        </div>
+      }
+    </section>
+  }
+
+  <section class="card">
+    <div class="card-head">
+      <h2>Bancas</h2>
+      <a routerLink="/bancas" class="link">Ver todas →</a>
+    </div>
+    <div class="bancas">
+      @for (b of nextBancas(); track b.id) {
+        <app-banca-card [banca]="b"></app-banca-card>
+      } @empty {
+        <div class="empty">Nenhuma banca com inscrições ou datas próximas neste CAS.</div>
+      }
+    </div>
   </section>
 
   <section class="card">

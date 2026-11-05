@@ -10,6 +10,10 @@ import { userResolver } from './Guards/Resolvers/user.resolver';
 import { ComingSoonComponent } from './Components/Content/coming-soon/coming-soon.component';
 import { ProfileComponent } from './Components/Content/profile/profile.component';
 import { CitiesConfigComponent } from './Components/Content/cities-config/cities-config.component';
+import { BancasListComponent } from './Components/Content/bancas/bancas-list/bancas-list.component';
+import { BancaDetailComponent } from './Components/Content/bancas/banca-detail/banca-detail.component';
+import { ManageBancasComponent } from './Components/Content/bancas/manage-bancas/manage-bancas.component';
+import { BancaEditorComponent } from './Components/Content/bancas/banca-editor/banca-editor.component';
 
 
 export const routes: Routes = [
@@ -25,7 +29,21 @@ export const routes: Routes = [
         resolve: { userData: userResolver },
         children: [
             { path: '', component: WelcomeComponent, pathMatch: 'full' },
-            { path: 'bancas', component: ComingSoonComponent, data: { title: 'Bancas' } },
+            { path: 'bancas', component: BancasListComponent },
+            { path: 'bancas/:id', component: BancaDetailComponent },
+            {
+                path: 'gerenciar-bancas',
+                component: ManageBancasComponent,
+                canActivate: [roleGuard],
+                data: { expectedRole: 'avaliador' }
+            },
+            {
+                // "nova" ou o id da banca
+                path: 'gerenciar-bancas/:id',
+                component: BancaEditorComponent,
+                canActivate: [roleGuard],
+                data: { expectedRole: 'avaliador' }
+            },
             { path: 'validar-certificado', component: ComingSoonComponent, data: { title: 'Validar certificado' } },
             {
                 path: 'meus-dados',

@@ -1,0 +1,35 @@
+.banca-card {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 16px 18px;
+  border: 1px solid #e3e6ea;
+  border-radius: 20px;
+  background: #fff;
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.banca-card:hover { border-color: #8fb8dc; box-shadow: 0 8px 24px -16px rgba(0, 103, 177, 0.5); }
+
+.date {
+  flex: 0 0 auto; min-width: 62px; padding: 0 6px; box-sizing: border-box; height: 68px; border-radius: 14px;
+  background: #0067b1; color: #fff;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.past .date { background: #eef1f5; color: #3d434d; }
+.day { font-size: 1.5rem; font-weight: 700; line-height: 1; white-space: nowrap; }
+.month { margin-top: 4px; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.05em; }
+
+.info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; align-items: flex-start; }
+.phase { padding: 2px 9px; border-radius: 7px; font-size: 0.72rem; font-weight: 600; }
+.title { font-size: 1.05rem; font-weight: 700; color: #15171c; }
+.meta { font-size: 0.88rem; color: #555b66; }
+.go { color: #8a919c; }
+
+@media (max-width: 600px) {
+  .banca-card { padding: 14px; gap: 12px; }
+  .date { flex-basis: 54px; height: 60px; }
+  .go { display: none; }
+}

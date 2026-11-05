@@ -1,0 +1,38 @@
+<div class="drp-field" [class.open]="open()" [class.disabled]="disabled" [class.invalid]="invalid && !open()" cdkOverlayOrigin #origin="cdkOverlayOrigin">
+  <mat-icon class="lead">date_range</mat-icon>
+  <input #input [id]="inputId || id" type="text" inputmode="numeric" placeholder="dd/mm/aaaa – dd/mm/aaaa" autocomplete="off"
+    [value]="text()" [disabled]="disabled" [attr.aria-label]="ariaLabel || null"
+    (input)="onType($any($event.target).value)" (blur)="onBlur()" (keydown)="onKey($event)" (click)="!open() && toggle()">
+  <button type="button" class="drp-btn" [disabled]="disabled" aria-label="Abrir calendário" [attr.aria-expanded]="open()" (click)="toggle()">
+    <mat-icon>calendar_month</mat-icon>
+  </button>
+</div>
+
+<ng-template cdkConnectedOverlay [cdkConnectedOverlayOrigin]="origin" [cdkConnectedOverlayOpen]="open()"
+  [cdkConnectedOverlayPositions]="positions" (overlayOutsideClick)="close()" (detach)="close()">
+  <div class="cal" role="dialog" aria-label="Escolher período" (keydown)="onKey($event)">
+    <div class="cal-head">
+      <button type="button" class="nav" aria-label="Mês anterior" (click)="moveMonth(-1)"><mat-icon>chevron_left</mat-icon></button>
+      <span class="cal-title">{{ title() }}</span>
+      <button type="button" class="nav" aria-label="Próximo mês" (click)="moveMonth(1)"><mat-icon>chevron_right</mat-icon></button>
+    </div>
+
+    <div class="grid" (mouseleave)="hover.set(null)">
+      @for (w of weekdays; track $index) {
+        <span class="wd">{{ w }}</span>
+      }
+      @for (d of days(); track d.iso) {
+        <span class="cell" [class.in]="d.inRange" [class.from]="d.start && !d.end" [class.to]="d.end && !d.start">
+          <button type="button" class="day" [class.outside]="d.outside" [class.today]="d.today" [class.edge]="d.start || d.end"
+            [disabled]="d.disabled" [attr.aria-label]="d.iso" [attr.aria-pressed]="d.start || d.end"
+            (mouseenter)="hover.set(d.iso)" (click)="pick(d)">{{ d.day }}</button>
+        </span>
+      }
+    </div>
+
+    <div class="cal-foot">
+      <button type="button" class="link" (click)="clear()">Limpar</button>
+      <span class="hint">{{ hint() }}</span>
+    </div>
+  </div>
+</ng-template>

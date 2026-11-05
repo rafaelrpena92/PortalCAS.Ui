@@ -1,0 +1,85 @@
+<div class="page">
+  <div class="header">
+    <div>
+      <h1 class="page-title">Gerenciar bancas</h1>
+      <p class="page-sub">Bancas do {{ _userService.selectedEntity()?.name }}. Qualquer avaliador do CAS pode ativar ou cancelar.</p>
+    </div>
+    <a routerLink="/gerenciar-bancas/nova" class="btn-primary"><mat-icon>add</mat-icon> Nova banca</a>
+  </div>
+
+  @if (!_userService.isAvaliadorInSelected()) {
+    <div class="empty">
+      <mat-icon>lock</mat-icon>
+      Você não é avaliador do {{ _userService.selectedEntity()?.name }}. Troque de CAS na barra azul.
+    </div>
+  } @else {
+    <div class="bar">
+      <div class="segmented" role="tablist" aria-label="Filtrar por estado">
+        @for (f of filters(); track f.key) {
+          <button type="button" role="tab" [attr.aria-selected]="filter() === f.key" [class.on]="filter() === f.key" (click)="filter.set(f.key)">
+            {{ f.label }} <span class="count">{{ f.count }}</span>
+          </button>
+        }
+      </div>
+      <span class="hint">Rascunho não aparece no site. A fase de uma banca ativa segue as datas.</span>
+    </div>
+
+    @if (isLoading()) {
+      <div class="empty">Carregando bancas...</div>
+    } @else {
+      <ul class="list">
+        @for (b of list(); track b.id) {
+          <li [class.busy]="busyId() === b.id">
+            <span class="date" [class.muted]="b.status !== BancaStatus.Ativa || isFinished(b)">
+              <span class="d">{{ day(b) }}</span><span class="m">{{ month(b) }}</span>
+            </span>
+
+            <div class="info">
+              <div class="title">{{ b.title }}</div>
+              @if (b.status === BancaStatus.Cancelada) {
+                <div class="phase canceled">Cancelada{{ b.canceledByEmail ? ' por ' + b.canceledByEmail : '' }}{{ b.cancelReason ? ' · ' + b.cancelReason : '' }}</div>
+              } @else if (b.status !== BancaStatus.Rascunho) {
+                <div class="phase"><span class="dot" [style.background]="phases[b.phase].fg"></span>{{ phases[b.phase].label }}</div>
+              }
+            </div>
+
+            <div class="side">
+              <div class="actions">
+                <span class="status" [class.draft]="b.status === BancaStatus.Rascunho" [class.active]="b.status === BancaStatus.Ativa" [class.off]="b.status === BancaStatus.Cancelada">
+                  {{ statusLabel[b.status] }}
+                </span>
+                @if (b.status !== BancaStatus.Cancelada) {
+                  <a class="icon-btn" [routerLink]="['/gerenciar-bancas', b.id]" title="Editar" aria-label="Editar banca"><mat-icon>edit</mat-icon></a>
+                } @else {
+                  <a class="icon-btn" [routerLink]="['/bancas', b.id]" title="Ver página" aria-label="Ver página da banca"><mat-icon>visibility</mat-icon></a>
+                }
+                @if (b.status === BancaStatus.Rascunho) {
+                  @if (b.canActivate) {
+                    <button type="button" class="icon-btn primary" [disabled]="busyId() === b.id" (click)="activate(b)" title="Ativar banca" aria-label="Ativar banca"><mat-icon>rocket_launch</mat-icon></button>
+                  }
+                  <button type="button" class="icon-btn danger" [disabled]="busyId() === b.id" (click)="remove(b)" title="Remover rascunho" aria-label="Remover rascunho"><mat-icon>delete</mat-icon></button>
+                }
+                @if (canCancel(b)) {
+                  <button type="button" class="icon-btn danger" [disabled]="busyId() === b.id" (click)="cancel(b)" title="Cancelar banca" aria-label="Cancelar banca"><mat-icon>block</mat-icon></button>
+                }
+              </div>
+
+              @if (b.status === BancaStatus.Rascunho) {
+                <div class="steps" [attr.aria-label]="doneCount(b) + ' de 5 etapas completas'">
+                  @for (s of steps(b); track s.n) {
+                    <span class="step" [class.done]="s.done" [title]="s.label + (s.done ? ' · completa' : ' · pendente')">
+                      @if (s.done) { <mat-icon>check</mat-icon> } @else { {{ s.n }} }
+                    </span>
+                  }
+                  <span class="steps-text">{{ doneCount(b) }}/5 etapas</span>
+                </div>
+              }
+            </div>
+          </li>
+        } @empty {
+          <li class="empty-row">Nenhuma banca neste estado.</li>
+        }
+      </ul>
+    }
+  }
+</div>
